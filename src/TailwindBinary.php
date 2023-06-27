@@ -26,6 +26,7 @@ class TailwindBinary
 
     public function __construct(
         private string $binaryDownloadDir,
+        private string $cwd,
         private ?string $binaryPath,
         private ?SymfonyStyle $output = null,
         HttpClientInterface $httpClient = null,
@@ -47,7 +48,7 @@ class TailwindBinary
         // add $binary to the front of the $arguments array
         array_unshift($arguments, $binary);
 
-        return new Process($arguments);
+        return new Process($arguments, $this->cwd);
     }
 
     private function downloadExecutable(): void
@@ -74,7 +75,7 @@ class TailwindBinary
                     $progressBar = $this->output?->createProgressBar($dlSize);
                 }
 
-                $progressBar->setProgress($dlNow);
+                $progressBar?->setProgress($dlNow);
             },
         ]);
         $fileHandler = fopen($targetPath, 'w');

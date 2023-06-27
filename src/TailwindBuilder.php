@@ -22,9 +22,10 @@ class TailwindBuilder
     private ?SymfonyStyle $output = null;
 
     public function __construct(
+        private readonly string $projectRootDir,
         private readonly string $inputPath,
         private readonly string $tailwindVarDir,
-        private readonly ?string $binaryPath,
+        private readonly ?string $binaryPath = null,
     ) {
     }
 
@@ -40,8 +41,9 @@ class TailwindBuilder
             $process->setTimeout(null);
             $process->setPty(true);
         }
+
         $this->output?->note('Executing Tailwind (pass -v to see more details).');
-        if ($this->output->isVerbose()) {
+        if ($this->output?->isVerbose()) {
             $this->output->writeln([
                 '  Command:',
                 '    '.$process->getCommandLine(),
@@ -93,6 +95,6 @@ class TailwindBuilder
 
     private function createBinary(): TailwindBinary
     {
-        return new TailwindBinary($this->tailwindVarDir, $this->binaryPath, $this->output);
+        return new TailwindBinary($this->tailwindVarDir, $this->projectRootDir, $this->binaryPath, $this->output);
     }
 }

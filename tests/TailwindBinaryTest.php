@@ -23,7 +23,7 @@ class TailwindBinaryTest extends TestCase
             new MockResponse('fake binary contents')
         ]);
 
-        $binary = new TailwindBinary($binaryDownloadDir, null, null, $client);
+        $binary = new TailwindBinary($binaryDownloadDir, __DIR__, null, null, $client);
         $process = $binary->createProcess(['-i', 'fake.css']);
         $this->assertFileExists($binaryDownloadDir.'/'.TailwindBinary::getBinaryName());
         $this->assertSame(
@@ -36,7 +36,7 @@ class TailwindBinaryTest extends TestCase
     {
         $client = new MockHttpClient();
 
-        $binary = new TailwindBinary('', 'custom-binary', null, $client);
+        $binary = new TailwindBinary('', __DIR__, 'custom-binary', null, $client);
         $process = $binary->createProcess(['-i', 'fake.css']);
         $this->assertSame(
             "'custom-binary' '-i' 'fake.css'",
