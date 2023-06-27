@@ -14,6 +14,7 @@ class TailwindBinary
 
     public function __construct(
         private string $binaryDownloadDir,
+        private ?string $binaryPath,
         private ?SymfonyStyle $output = null,
         HttpClientInterface $httpClient = null,
     )
@@ -23,9 +24,13 @@ class TailwindBinary
 
     public function createProcess(array $arguments = []): Process
     {
-        $binary = $this->binaryDownloadDir . '/' . self::getBinaryName();
-        if (!is_file($binary)) {
-            $this->downloadExecutable();
+        if (null === $this->binaryPath) {
+            $binary = $this->binaryDownloadDir . '/' . self::getBinaryName();
+            if (!is_file($binary)) {
+                $this->downloadExecutable();
+            }
+        } else {
+            $binary = $this->binaryPath;
         }
 
         // add $binary to the front of the $arguments array

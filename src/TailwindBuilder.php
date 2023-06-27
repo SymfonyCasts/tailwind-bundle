@@ -15,13 +15,14 @@ class TailwindBuilder
     public function __construct(
         private readonly string $inputPath,
         private readonly string $tailwindVarDir,
+        private readonly ?string $binaryPath,
     )
     {
     }
 
     public function runBuild(bool $watch): Process
     {
-        $binary = new TailwindBinary($this->tailwindVarDir, $this->output);
+        $binary = $this->createBinary();
         $arguments = ['-i', $this->inputPath, '-o', $this->getInternalOutputCssPath()];
         if ($watch) {
             $arguments[] = '--watch';
@@ -87,6 +88,6 @@ class TailwindBuilder
      */
     private function createBinary(): TailwindBinary
     {
-        return new TailwindBinary($this->tailwindVarDir, $this->output);
+        return new TailwindBinary($this->tailwindVarDir, $this->binaryPath, $this->output);
     }
 }
