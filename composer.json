@@ -1,0 +1,35 @@
+{
+    "name": "symfonycasts/tailwind-bundle",
+    "description": "Delightful Tailwind Support for Symfony",
+    "license": "MIT",
+    "type": "library",
+    "keywords": ["asset-mapper", "tailwind"],
+    "authors": [
+        {
+            "name": "Ryan Weaver",
+            "homepage": "https://symfonycasts.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "symfony/asset-mapper": "^6.3",
+        "symfony/console": "^5.4|^6.3",
+        "symfony/http-client": "^5.4|^6.3",
+        "symfony/process": "^5.4|^6.3"
+    },
+    "require-dev": {
+        "symfony/framework-bundle": "^6.3",
+        "symfony/phpunit-bridge": "^5.4|^6.3"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Symfonycasts\\TailwindBundle\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Symfony\\TailwindBundle\\Tests\\": "tests/"
+        }
+    }
+}
