@@ -5,6 +5,9 @@ namespace Symfonycasts\TailwindBundle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Process;
 
+/**
+ * Manages the process of executing Tailwind on the input file.
+ */
 class TailwindBuilder
 {
     private SymfonyStyle $output;
@@ -44,7 +47,7 @@ class TailwindBuilder
         return $process;
     }
 
-    public function setOutput(SymfonyStyle $output)
+    public function setOutput(SymfonyStyle $output): void
     {
         $this->output = $output;
     }

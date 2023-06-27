@@ -16,6 +16,12 @@ class TailwindExtension extends Extension implements ConfigurationInterface
     {
         $loader = new Loader\PhpFileLoader($container, new FileLocator(__DIR__.'/../../config'));
         $loader->load('services.php');
+
+        $configuration = $this->getConfiguration($configs, $container);
+        $config = $this->processConfiguration($configuration, $configs);
+
+        $container->findDefinition('tailwind.builder')
+            ->replaceArgument(0, $config['css_path']);
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container)
@@ -33,7 +39,7 @@ class TailwindExtension extends Extension implements ConfigurationInterface
             ->children()
                 ->scalarNode('css_path')
                     ->info('Path to CSS file to process through Tailwind (AssetMapper only)')
-                    ->defaultValue(['%kernel.project_dir%/assets/styles/app.css'])
+                    ->defaultValue('%kernel.project_dir%/assets/styles/app.css')
                 ->end()
             ->end();
 

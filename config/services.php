@@ -6,6 +6,7 @@ use Symfonycasts\TailwindBundle\AssetMapper\TailwindCssAssetCompiler;
 use Symfonycasts\TailwindBundle\Command\TailwindBuildCommand;
 use Symfonycasts\TailwindBundle\TailwindBinary;
 use Symfonycasts\TailwindBundle\TailwindBuilder;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\abstract_arg;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -13,8 +14,7 @@ return static function (ContainerConfigurator $container): void {
     $container->services()
         ->set('tailwind.builder', TailwindBuilder::class)
             ->args([
-                // TODO: make dynamic
-                param('kernel.project_dir').'/assets/styles/app.css',
+                abstract_arg('path to source Tailwind CSS file'),
                 param('kernel.project_dir').'/var/tailwind',
             ])
 
