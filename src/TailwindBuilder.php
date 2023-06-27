@@ -2,7 +2,6 @@
 
 namespace Symfonycasts\TailwindBundle;
 
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Process;
 
@@ -50,8 +49,22 @@ class TailwindBuilder
         $this->output = $output;
     }
 
-    private function getInternalOutputCssPath()
+    public function getInternalOutputCssPath(): string
     {
-        return $this->tailwindVarDir . '/tailwind.css';
+        return $this->tailwindVarDir . '/tailwind.built.css';
+    }
+
+    public function getInputCssPath(): string
+    {
+        return $this->inputPath;
+    }
+
+    public function getOutputCssContent(): string
+    {
+        if (!is_file($this->getInternalOutputCssPath())) {
+            throw new \RuntimeException('Built Tailwind CSS file does not exist: run "php bin/console tailwind:build" to generate it');
+        }
+
+        return file_get_contents($this->getInternalOutputCssPath());
     }
 }
