@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the SymfonyCasts VerifyEmailBundle package.
+ * This file is part of the SymfonyCasts TailwindBundle package.
  * Copyright (c) SymfonyCasts <https://symfonycasts.com/>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -25,8 +25,7 @@ class TailwindBuilder
         private readonly string $inputPath,
         private readonly string $tailwindVarDir,
         private readonly ?string $binaryPath,
-    )
-    {
+    ) {
     }
 
     public function runBuild(bool $watch): Process
@@ -60,7 +59,7 @@ class TailwindBuilder
         if ($this->output->isVerbose()) {
             $this->output->writeln([
                 '  Command:',
-                '    ' . $process->getCommandLine(),
+                '    '.$process->getCommandLine(),
             ]);
         }
         $process->start();
@@ -75,7 +74,7 @@ class TailwindBuilder
 
     public function getInternalOutputCssPath(): string
     {
-        return $this->tailwindVarDir . '/tailwind.built.css';
+        return $this->tailwindVarDir.'/tailwind.built.css';
     }
 
     public function getInputCssPath(): string
@@ -92,9 +91,6 @@ class TailwindBuilder
         return file_get_contents($this->getInternalOutputCssPath());
     }
 
-    /**
-     * @return TailwindBinary
-     */
     private function createBinary(): TailwindBinary
     {
         return new TailwindBinary($this->tailwindVarDir, $this->binaryPath, $this->output);

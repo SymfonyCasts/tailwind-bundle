@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the SymfonyCasts VerifyEmailBundle package.
+ * This file is part of the SymfonyCasts TailwindBundle package.
  * Copyright (c) SymfonyCasts <https://symfonycasts.com/>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -29,15 +29,14 @@ class TailwindBinary
         private ?string $binaryPath,
         private ?SymfonyStyle $output = null,
         HttpClientInterface $httpClient = null,
-    )
-    {
+    ) {
         $this->httpClient = $httpClient ?? HttpClient::create();
     }
 
     public function createProcess(array $arguments = []): Process
     {
         if (null === $this->binaryPath) {
-            $binary = $this->binaryDownloadDir . '/' . self::getBinaryName();
+            $binary = $this->binaryDownloadDir.'/'.self::getBinaryName();
             if (!is_file($binary)) {
                 $this->downloadExecutable();
             }
@@ -61,13 +60,13 @@ class TailwindBinary
             mkdir($this->binaryDownloadDir, 0777, true);
         }
 
-        $targetPath = $this->binaryDownloadDir . '/' . self::getBinaryName();
+        $targetPath = $this->binaryDownloadDir.'/'.self::getBinaryName();
         $progressBar = null;
 
         $response = $this->httpClient->request('GET', $url, [
             'on_progress' => function (int $dlNow, int $dlSize, array $info) use (&$progressBar): void {
                 // dlSize is not known at the start
-                if ($dlSize === 0) {
+                if (0 === $dlSize) {
                     return;
                 }
 
@@ -84,21 +83,21 @@ class TailwindBinary
         }
         fclose($fileHandler);
         $progressBar?->finish();
-        $this?->output->writeln('');
+        $this->output->writeln('');
         // make file executable
         chmod($targetPath, 0777);
     }
 
     private static function getBinaryName(): string
     {
-        $os = strtolower(PHP_OS);
+        $os = strtolower(\PHP_OS);
         $machine = php_uname('m');
 
         if (str_contains($os, 'darwin')) {
-            if ($machine === 'arm64') {
+            if ('arm64' === $machine) {
                 return 'tailwindcss-macos-arm64';
             }
-            if ($machine === 'x86_64') {
+            if ('x86_64' === $machine) {
                 return 'tailwindcss-macos-x64';
             }
 
@@ -106,13 +105,13 @@ class TailwindBinary
         }
 
         if (str_contains($os, 'linux')) {
-            if ($machine === 'arm64') {
+            if ('arm64' === $machine) {
                 return 'tailwindcss-linux-arm64';
             }
-            if ($machine === 'armv7') {
+            if ('armv7' === $machine) {
                 return 'tailwindcss-linux-armv7';
             }
-            if ($machine === 'x86_64') {
+            if ('x86_64' === $machine) {
                 return 'tailwindcss-linux-x64';
             }
 
@@ -120,10 +119,10 @@ class TailwindBinary
         }
 
         if (str_contains($os, 'win')) {
-            if ($machine === 'arm64') {
+            if ('arm64' === $machine) {
                 return 'tailwindcss-windows-arm64.exe';
             }
-            if ($machine === 'x86_64') {
+            if ('x86_64' === $machine) {
                 return 'tailwindcss-windows-x64.exe';
             }
 
