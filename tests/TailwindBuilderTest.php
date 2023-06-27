@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the SymfonyCasts TailwindBundle package.
+ * Copyright (c) SymfonyCasts <https://symfonycasts.com/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfonycasts\TailwindBundle\Tests;
 
 use PHPUnit\Framework\TestCase;
@@ -8,7 +15,7 @@ use Symfonycasts\TailwindBundle\TailwindBuilder;
 
 class TailwindBuilderTest extends TestCase
 {
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         $fs = new Filesystem();
         $fs->remove(__DIR__.'/fixtures/var/tailwind');

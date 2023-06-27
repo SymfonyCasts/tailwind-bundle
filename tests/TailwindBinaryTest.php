@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the SymfonyCasts TailwindBundle package.
+ * Copyright (c) SymfonyCasts <https://symfonycasts.com/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfonycasts\TailwindBundle\Tests;
 
 use PHPUnit\Framework\TestCase;
@@ -20,7 +27,7 @@ class TailwindBinaryTest extends TestCase
         $fs->mkdir($binaryDownloadDir);
 
         $client = new MockHttpClient([
-            new MockResponse('fake binary contents')
+            new MockResponse('fake binary contents'),
         ]);
 
         $binary = new TailwindBinary($binaryDownloadDir, __DIR__, null, null, $client);
