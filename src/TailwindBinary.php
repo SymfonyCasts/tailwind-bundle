@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the SymfonyCasts VerifyEmailBundle package.
+ * Copyright (c) SymfonyCasts <https://symfonycasts.com/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfonycasts\TailwindBundle;
 
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -7,6 +14,11 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Process\Process;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+/**
+ * Wraps and downloads the tailwindcss binary.
+ *
+ * @author Ryan Weaver <ryan@symfonycasts.com>
+ */
 class TailwindBinary
 {
     private const VERSION = 'v3.3.2';

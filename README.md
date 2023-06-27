@@ -77,7 +77,7 @@ php bin/console asset-map:compile
 To see the full config from this bundle, run:
 
 ```bash
-php bin/console config:dump tailwind
+php bin/console config:dump symfonycasts_tailwind
 ```
 
 The main option is `input_css` option, which defaults to `assets/styles/app.css`.
@@ -85,8 +85,8 @@ This represents the "source" Tailwind file (the one that contains the `@tailwind
 directives):
 
 ```yml
-# config/packages/tailwind.yaml
-tailwind:
+# config/packages/symfonycasts_tailwind.yaml
+symfonycasts_tailwind:
     input_css: 'assets/styles/other.css'
 ```
 
@@ -103,7 +103,7 @@ npm add tailwindcss
 To instruct the bundle to use that binary instead, set the `binary` option:
 
 ```yml
-# config/packages/tailwind.yaml
-tailwind:
+# config/packages/symfonycasts_tailwind.yaml
+symfonycasts_tailwind:
     binary: 'node_modules/.bin/tailwindcss'
 ```
