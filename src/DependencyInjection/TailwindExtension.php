@@ -38,9 +38,15 @@ class TailwindExtension extends Extension implements ConfigurationInterface
         return $this;
     }
 
+    public function getAlias(): string
+    {
+        return 'symfonycasts_tailwind';
+    }
+
+
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder('tailwind');
+        $treeBuilder = new TreeBuilder('symfonycasts_tailwind');
         $rootNode = $treeBuilder->getRootNode();
         \assert($rootNode instanceof ArrayNodeDefinition);
 

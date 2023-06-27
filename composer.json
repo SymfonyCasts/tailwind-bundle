@@ -19,7 +19,8 @@
     },
     "require-dev": {
         "symfony/framework-bundle": "^6.3",
-        "symfony/phpunit-bridge": "^5.4|^6.3"
+        "symfony/phpunit-bridge": "^5.4|^6.3",
+        "phpstan/phpstan": "1.11.x-dev"
     },
     "minimum-stability": "dev",
     "autoload": {

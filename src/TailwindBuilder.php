@@ -19,7 +19,7 @@ use Symfony\Component\Process\Process;
  */
 class TailwindBuilder
 {
-    private SymfonyStyle $output;
+    private ?SymfonyStyle $output = null;
 
     public function __construct(
         private readonly string $inputPath,
