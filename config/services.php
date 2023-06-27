@@ -4,6 +4,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 use Symfonycasts\TailwindBundle\AssetMapper\TailwindCssAssetCompiler;
 use Symfonycasts\TailwindBundle\Command\TailwindBuildCommand;
+use Symfonycasts\TailwindBundle\Command\TailwindInitCommand;
 use Symfonycasts\TailwindBundle\TailwindBinary;
 use Symfonycasts\TailwindBundle\TailwindBuilder;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\abstract_arg;
@@ -21,6 +22,13 @@ return static function (ContainerConfigurator $container): void {
         ->set('tailwind.command.build', TailwindBuildCommand::class)
             ->args([
                 service('tailwind.builder')
+            ])
+            ->tag('console.command')
+
+        ->set('tailwind.command.init', TailwindInitCommand::class)
+            ->args([
+                service('tailwind.builder'),
+                param('kernel.project_dir'),
             ])
             ->tag('console.command')
 

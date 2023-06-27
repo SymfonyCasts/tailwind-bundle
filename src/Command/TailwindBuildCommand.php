@@ -34,7 +34,7 @@ class TailwindBuildCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $this->tailwindBuilder->setOutput($io);
 
-        $process = $this->tailwindBuilder->runTailwind(
+        $process = $this->tailwindBuilder->runBuild(
             $input->getOption('watch'),
         );
         $process->wait(function ($type, $buffer) use ($io) {

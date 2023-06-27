@@ -19,18 +19,14 @@ class TailwindBuilder
     {
     }
 
-    public function runTailwind(bool $watch): Process
+    public function runBuild(bool $watch): Process
     {
-        $arguments = [];
+        $binary = new TailwindBinary($this->tailwindVarDir, $this->output);
+        $arguments = ['-i', $this->inputPath, '-o', $this->getInternalOutputCssPath()];
         if ($watch) {
             $arguments[] = '--watch';
         }
-        $binary = new TailwindBinary($this->tailwindVarDir, $this->output);
-        $process = $binary->createProcess(
-            $this->inputPath,
-            $this->getInternalOutputCssPath(),
-            $arguments,
-        );
+        $process = $binary->createProcess($arguments);
         if ($watch) {
             $process->setTimeout(null);
             $process->setPty(true);
@@ -40,6 +36,21 @@ class TailwindBuilder
             $this->output->writeln([
                 '  Command:',
                 '    '.$process->getCommandLine(),
+            ]);
+        }
+        $process->start();
+
+        return $process;
+    }
+
+    public function runInit()
+    {
+        $binary = $this->createBinary();
+        $process = $binary->createProcess(['init']);
+        if ($this->output->isVerbose()) {
+            $this->output->writeln([
+                '  Command:',
+                '    ' . $process->getCommandLine(),
             ]);
         }
         $process->start();
@@ -69,5 +80,13 @@ class TailwindBuilder
         }
 
         return file_get_contents($this->getInternalOutputCssPath());
+    }
+
+    /**
+     * @return TailwindBinary
+     */
+    private function createBinary(): TailwindBinary
+    {
+        return new TailwindBinary($this->tailwindVarDir, $this->output);
     }
 }

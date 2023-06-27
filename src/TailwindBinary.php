@@ -21,16 +21,17 @@ class TailwindBinary
         $this->httpClient = $httpClient ?? HttpClient::create();
     }
 
-    public function createProcess(string $input, string $output, array $arguments = []): Process
+    public function createProcess(array $arguments = []): Process
     {
         $binary = $this->binaryDownloadDir . '/' . self::getBinaryName();
         if (!is_file($binary)) {
             $this->downloadExecutable();
         }
 
-        return new Process(
-            array_merge([$binary, '-i', $input, '-o', $output], $arguments),
-        );
+        // add $binary to the front of the $arguments array
+        array_unshift($arguments, $binary);
+
+        return new Process($arguments);
     }
 
     private function downloadExecutable(): void
