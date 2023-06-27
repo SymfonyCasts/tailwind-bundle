@@ -18,6 +18,7 @@
         "symfony/process": "^5.4|^6.3"
     },
     "require-dev": {
+        "symfony/filesystem": "^6.3",
         "symfony/framework-bundle": "^6.3",
         "symfony/phpunit-bridge": "^6.3",
         "phpstan/phpstan": "1.11.x-dev"

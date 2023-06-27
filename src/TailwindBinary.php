@@ -83,12 +83,15 @@ class TailwindBinary
         }
         fclose($fileHandler);
         $progressBar?->finish();
-        $this->output->writeln('');
+        $this->output?->writeln('');
         // make file executable
         chmod($targetPath, 0777);
     }
 
-    private static function getBinaryName(): string
+    /**
+     * @internal
+     */
+    public static function getBinaryName(): string
     {
         $os = strtolower(\PHP_OS);
         $machine = php_uname('m');
