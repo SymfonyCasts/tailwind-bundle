@@ -2,7 +2,7 @@
 
 This bundle makes it easy to use [Tailwind CSS](https://tailwindcss.com/) with
 Symfony's [AssetMapper Component](https://symfony.com/doc/current/frontend/asset_mapper.html)
-and *without* needing to install Node.js.
+(no Node required!).
 
 * Automatically downloads the correct [standalone Tailwind CSS binary](https://tailwindcss.com/blog/standalone-cli);
 * Adds a `tailwind:build` command to build & watch for changes;
@@ -17,7 +17,7 @@ and *without* needing to install Node.js.
 Install the bundle & initialize your app with two commands:
 
 ```bash
-composer require symfonycasts/tailwindcss-bundle
+composer require symfonycasts/tailwind-bundle
 php bin/console tailwind:init
 ```
 
