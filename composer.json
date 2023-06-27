@@ -1,6 +1,6 @@
 {
     "name": "symfonycasts/tailwind-bundle",
-    "description": "Delightful Tailwind Support for Symfony",
+    "description": "Delightful Tailwind Support for Symfony + AssetMapper",
     "license": "MIT",
     "type": "library",
     "keywords": ["asset-mapper", "tailwind"],
