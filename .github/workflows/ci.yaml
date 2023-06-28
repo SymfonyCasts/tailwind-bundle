@@ -14,6 +14,13 @@ jobs:
             php-version-matrix: '["8.1", "8.2"]'
             php-version-lowest: '8.1'
 
+    test_windows:
+        uses: SymfonyCasts/.github/.github/workflows/phpunit.yaml@main
+        with:
+            php-version-matrix: '["8.2"]'
+            php-version-lowest: '8.2'
+            runs-on: windows-latest
+
     composer-validate:
         uses: SymfonyCasts/.github/.github/workflows/composer-validate.yaml@main
 

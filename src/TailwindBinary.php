@@ -95,7 +95,7 @@ class TailwindBinary
     public static function getBinaryName(): string
     {
         $os = strtolower(\PHP_OS);
-        $machine = php_uname('m');
+        $machine = strtolower(php_uname('m'));
 
         if (str_contains($os, 'darwin')) {
             if ('arm64' === $machine) {
@@ -126,7 +126,7 @@ class TailwindBinary
             if ('arm64' === $machine) {
                 return 'tailwindcss-windows-arm64.exe';
             }
-            if ('x86_64' === $machine) {
+            if ('x86_64' === $machine || 'amd64' === $machine) {
                 return 'tailwindcss-windows-x64.exe';
             }
 
