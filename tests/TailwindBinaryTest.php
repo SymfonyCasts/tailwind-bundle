@@ -33,8 +33,12 @@ class TailwindBinaryTest extends TestCase
         $binary = new TailwindBinary($binaryDownloadDir, __DIR__, null, null, $client);
         $process = $binary->createProcess(['-i', 'fake.css']);
         $this->assertFileExists($binaryDownloadDir.'/'.TailwindBinary::getBinaryName());
+
+        // Windows doesn't wrap arguments in quotes
+        $expectedTemplate = '\\' === \DIRECTORY_SEPARATOR ? '"%s" -i fake.css' : "'%s' '-i' 'fake.css'";
+
         $this->assertSame(
-            sprintf("'%s' '-i' 'fake.css'", $binaryDownloadDir.'/'.TailwindBinary::getBinaryName()),
+            sprintf($expectedTemplate, $binaryDownloadDir.'/'.TailwindBinary::getBinaryName()),
             $process->getCommandLine()
         );
     }
@@ -45,8 +49,10 @@ class TailwindBinaryTest extends TestCase
 
         $binary = new TailwindBinary('', __DIR__, 'custom-binary', null, $client);
         $process = $binary->createProcess(['-i', 'fake.css']);
+        // on windows, arguments are not wrapped in quotes
+        $expected = '\\' === \DIRECTORY_SEPARATOR ? 'custom-binary -i fake.css' : "'custom-binary' '-i' 'fake.css'";
         $this->assertSame(
-            "'custom-binary' '-i' 'fake.css'",
+            $expected,
             $process->getCommandLine()
         );
     }

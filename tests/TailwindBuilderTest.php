@@ -15,14 +15,14 @@ use Symfonycasts\TailwindBundle\TailwindBuilder;
 
 class TailwindBuilderTest extends TestCase
 {
-    protected function tearDown(): void
-    {
-        $fs = new Filesystem();
-        $fs->remove(__DIR__.'/fixtures/var/tailwind');
-    }
-
     public function testIntegration(): void
     {
+        $fs = new Filesystem();
+        if (file_exists(__DIR__.'/fixtures/var/tailwind')) {
+            $fs->remove(__DIR__.'/fixtures/var/tailwind');
+        }
+        $fs->mkdir(__DIR__.'/fixtures/var/tailwind');
+
         $builder = new TailwindBuilder(
             __DIR__.'/fixtures',
             __DIR__.'/fixtures/app.css',
