@@ -16,7 +16,7 @@ use Symfonycasts\TailwindBundle\TailwindBuilder;
 
 class TailwindBuilderTest extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         $fs = new Filesystem();
         if (file_exists(__DIR__.'/fixtures/var/tailwind')) {
@@ -25,7 +25,7 @@ class TailwindBuilderTest extends TestCase
         $fs->mkdir(__DIR__.'/fixtures/var/tailwind');
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         $finder = new Finder();
         $finder->in(__DIR__.'/fixtures/var/tailwind')->files();
@@ -36,8 +36,6 @@ class TailwindBuilderTest extends TestCase
 
     public function testIntegration(): void
     {
-
-
         $builder = new TailwindBuilder(
             __DIR__.'/fixtures',
             __DIR__.'/fixtures/assets/styles/app.css',

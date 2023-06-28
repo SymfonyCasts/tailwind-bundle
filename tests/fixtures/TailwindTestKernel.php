@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the SymfonyCasts TailwindBundle package.
+ * Copyright (c) SymfonyCasts <https://symfonycasts.com/>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfonycasts\TailwindBundle\Tests\fixtures;
 
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
@@ -34,24 +41,24 @@ class TailwindTestKernel extends Kernel
             'http_method_override' => true,
             'asset_mapper' => [
                 'paths' => [
-                    __DIR__ . '/assets',
+                    __DIR__.'/assets',
                 ],
-            ]
+            ],
         ]);
 
         $container->loadFromExtension('symfonycasts_tailwind', [
-            'input_css' => __DIR__ . '/assets/styles/app.css',
+            'input_css' => __DIR__.'/assets/styles/app.css',
         ]);
     }
 
     public function getCacheDir(): string
     {
-        return sys_get_temp_dir() . '/cache' . spl_object_hash($this);
+        return sys_get_temp_dir().'/cache'.spl_object_hash($this);
     }
 
     public function getLogDir(): string
     {
-        return sys_get_temp_dir() . '/logs' . spl_object_hash($this);
+        return sys_get_temp_dir().'/logs'.spl_object_hash($this);
     }
 
     public function getProjectDir(): string
