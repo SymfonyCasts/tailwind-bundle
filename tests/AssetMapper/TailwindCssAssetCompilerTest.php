@@ -22,17 +22,17 @@ class TailwindCssAssetCompilerTest extends TestCase
         $builder = $this->createMock(TailwindBuilder::class);
         $builder->expects($this->any())
             ->method('getInputCssPath')
-            ->willReturn('/foo/bar/input.css');
+            ->willReturn(__DIR__.'/../fixtures/assets/styles/app.css');
         $builder->expects($this->once())
-            ->method('getInternalOutputCssPath')
-            ->willReturn('/foo/bar/output.css');
+            ->method('getInternalOutputCssPath');
         $builder->expects($this->once())
             ->method('getOutputCssContent')
             ->willReturn('output content from Tailwind');
 
         $compiler = new TailwindCssAssetCompiler($builder);
-        $asset1 = new MappedAsset('other/file.css', '/some/other/file.css');
-        $asset2 = new MappedAsset('bar/input.css', '/foo/bar/input.css');
+        $asset1 = new MappedAsset('styles/other.css', __DIR__.'/../fixtures/assets/styles/other.css');
+        // extra ../ added so the path doesn't exactly match the string used above
+        $asset2 = new MappedAsset('styles/app.css', __DIR__.'/../../tests/fixtures/assets/styles/app.css');
         $this->assertFalse($compiler->supports($asset1));
         $this->assertTrue($compiler->supports($asset2));
 
