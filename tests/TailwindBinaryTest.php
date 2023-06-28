@@ -35,7 +35,7 @@ class TailwindBinaryTest extends TestCase
         $this->assertFileExists($binaryDownloadDir.'/'.TailwindBinary::getBinaryName());
 
         // Windows doesn't wrap arguments in quotes
-        $expectedTemplate = '\\' === DIRECTORY_SEPARATOR ? "%s -i fake.css" : "'%s' '-i' 'fake.css'";
+        $expectedTemplate = '\\' === DIRECTORY_SEPARATOR ? '"%s" -i fake.css' : "'%s' '-i' 'fake.css'";
 
         $this->assertSame(
             sprintf($expectedTemplate, $binaryDownloadDir.'/'.TailwindBinary::getBinaryName()),
