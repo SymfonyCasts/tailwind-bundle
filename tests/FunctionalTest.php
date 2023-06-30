@@ -24,7 +24,13 @@ class FunctionalTest extends KernelTestCase
             $fs->remove($tailwindVarDir);
         }
         $fs->mkdir($tailwindVarDir);
-        file_put_contents($tailwindVarDir.'/tailwind.built.css', 'the built css');
+        file_put_contents($tailwindVarDir.'/tailwind.built.css', <<<EOF
+        body {
+            padding: 17px;
+            background-image: url('../images/penguin.png');
+        }
+        EOF
+        );
     }
 
     protected function tearDown(): void
@@ -42,6 +48,8 @@ class FunctionalTest extends KernelTestCase
 
         $asset = $assetMapper->getAsset('styles/app.css');
         $this->assertInstanceOf(MappedAsset::class, $asset);
-        $this->assertSame('the built css', $asset->content);
+        $this->assertStringContainsString('padding: 17px', $asset->content);
+        // verify the core CSS compiler that handles url() was executed
+        $this->assertMatchesRegularExpression('/penguin-[a-f0-9]{32}\.png/', $asset->content);
     }
 }

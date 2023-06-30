@@ -38,6 +38,9 @@ return static function (ContainerConfigurator $container): void {
             ->args([
                 service('tailwind.builder')
             ])
-            ->tag('asset_mapper.compiler')
+            ->tag('asset_mapper.compiler', [
+                // run before core CssAssetUrlCompiler that resolves url() references
+                'priority' => 10,
+            ])
     ;
 };
