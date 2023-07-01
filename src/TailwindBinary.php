@@ -109,7 +109,7 @@ class TailwindBinary
         }
 
         if (str_contains($os, 'linux')) {
-            if ('arm64' === $machine) {
+            if ('arm64' === $machine || 'aarch64' === $machine) {
                 return 'tailwindcss-linux-arm64';
             }
             if ('armv7' === $machine) {
