@@ -10,6 +10,7 @@
 namespace Symfonycasts\TailwindBundle;
 
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Process\InputStream;
 use Symfony\Component\Process\Process;
 
 /**
@@ -39,7 +40,9 @@ class TailwindBuilder
         $process = $binary->createProcess($arguments);
         if ($watch) {
             $process->setTimeout(null);
-            $process->setPty(true);
+            // setting an input stream causes the command to "wait" for the watch
+            $inputStream = new InputStream();
+            $process->setInput($inputStream);
         }
 
         $this->output?->note('Executing Tailwind (pass -v to see more details).');
