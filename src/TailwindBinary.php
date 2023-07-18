@@ -21,7 +21,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 class TailwindBinary
 {
-    private const VERSION = 'v3.3.2';
+    private const VERSION = 'v3.3.3';
     private HttpClientInterface $httpClient;
 
     public function __construct(
