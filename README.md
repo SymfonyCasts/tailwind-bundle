@@ -31,7 +31,7 @@ To use the Tailwind CSS file, start by including the input file
 you already have this:
 
 ```twig
-{# templates.base.html.twig #}
+{# templates/base.html.twig #}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
