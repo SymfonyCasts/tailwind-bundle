@@ -17,6 +17,8 @@ use Symfony\Component\Process\Process;
  * Manages the process of executing Tailwind on the input file.
  *
  * @author Ryan Weaver <ryan@symfonycasts.com>
+ *
+ * @final
  */
 class TailwindBuilder
 {
@@ -40,12 +42,17 @@ class TailwindBuilder
         }
     }
 
-    public function runBuild(bool $watch): Process
-    {
+    public function runBuild(
+        bool $watch,
+        bool $minify,
+    ): Process {
         $binary = $this->createBinary();
         $arguments = ['-i', $this->inputPath, '-o', $this->getInternalOutputCssPath()];
         if ($watch) {
             $arguments[] = '--watch';
+        }
+        if ($minify) {
+            $arguments[] = '--minify';
         }
         $process = $binary->createProcess($arguments);
         if ($watch) {
