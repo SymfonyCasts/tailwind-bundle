@@ -44,6 +44,10 @@ class TailwindTestKernel extends Kernel
                     __DIR__.'/assets',
                 ],
             ],
+            'handle_all_throwables' => true,
+            'php_errors' => [
+                'log' => true,
+            ],
         ]);
 
         $container->loadFromExtension('symfonycasts_tailwind', [
