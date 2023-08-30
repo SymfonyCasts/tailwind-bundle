@@ -21,13 +21,23 @@ use Symfony\Component\Process\Process;
 class TailwindBuilder
 {
     private ?SymfonyStyle $output = null;
+    private readonly string $inputPath;
 
     public function __construct(
         private readonly string $projectRootDir,
-        private readonly string $inputPath,
+        string $inputPath,
         private readonly string $tailwindVarDir,
         private readonly ?string $binaryPath = null,
     ) {
+        if (is_file($inputPath)) {
+            $this->inputPath = $inputPath;
+        } else {
+            $this->inputPath = $projectRootDir.'/'.$inputPath;
+
+            if (!is_file($this->inputPath)) {
+                throw new \InvalidArgumentException(sprintf('The input CSS file "%s" does not exist.', $inputPath));
+            }
+        }
     }
 
     public function runBuild(bool $watch): Process
