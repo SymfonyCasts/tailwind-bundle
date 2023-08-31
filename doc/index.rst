@@ -2,10 +2,10 @@ Tailwind CSS for Symfony!
 =========================
 
 This bundle makes it easy to use `Tailwind CSS <https://tailwindcss.com/>`_ with
-Symfony's `AssetMapper Component <https://symfony.com/doc/current/frontend/asset_mapper.html>`
+Symfony's `AssetMapper Component <https://symfony.com/doc/current/frontend/asset_mapper.html>`_
 (no Node required!).
 
-- Automatically downloads the correct `standalone Tailwind CSS binary <https://tailwindcss.com/blog/standalone-cli>`;
+- Automatically downloads the correct `standalone Tailwind CSS binary <https://tailwindcss.com/blog/standalone-cli>`_;
 - Adds a ``tailwind:build`` command to build & watch for changes;
 - Transparently swaps in the compiled CSS.
 
