@@ -68,7 +68,7 @@ When you deploy, run the `tailwind:build` command *before* the `asset-map:compil
 command so the built file is available:
 
 ```bash
-php bin/console tailwind:build
+php bin/console tailwind:build --minify
 php bin/console asset-map:compile
 ```
 

@@ -12,6 +12,7 @@ namespace Symfonycasts\TailwindBundle\Command;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfonycasts\TailwindBundle\TailwindBuilder;
@@ -30,7 +31,10 @@ class TailwindBuildCommand extends Command
 
     protected function configure(): void
     {
-        $this->addOption('watch', 'w', null, 'Watch for changes and rebuild automatically');
+        $this
+            ->addOption('watch', 'w', null, 'Watch for changes and rebuild automatically')
+            ->addOption('minify', 'm', InputOption::VALUE_NONE, 'Minify the output CSS')
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -39,7 +43,8 @@ class TailwindBuildCommand extends Command
         $this->tailwindBuilder->setOutput($io);
 
         $process = $this->tailwindBuilder->runBuild(
-            $input->getOption('watch'),
+            watch: $input->getOption('watch'),
+            minify: $input->getOption('minify'),
         );
         $process->wait(function ($type, $buffer) use ($io) {
             $io->write($buffer);
