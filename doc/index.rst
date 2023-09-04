@@ -75,7 +75,7 @@ command so the built file is available:
 
 .. code-block:: terminal
 
-    $ php bin/console tailwind:build
+    $ php bin/console tailwind:build --minify
     $ php bin/console asset-map:compile
 
 Configuration
