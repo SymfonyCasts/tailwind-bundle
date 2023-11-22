@@ -31,7 +31,6 @@ return static function (ContainerConfigurator $container): void {
         ->set('tailwind.command.init', TailwindInitCommand::class)
             ->args([
                 service('tailwind.builder'),
-                param('kernel.project_dir'),
             ])
             ->tag('console.command')
 
