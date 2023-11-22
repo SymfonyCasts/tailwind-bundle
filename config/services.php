@@ -17,6 +17,7 @@ return static function (ContainerConfigurator $container): void {
             ->args([
                 param('kernel.project_dir'),
                 abstract_arg('path to source Tailwind CSS file'),
+                abstract_arg('path to source Tailwind CSS config file'),
                 param('kernel.project_dir').'/var/tailwind',
                 abstract_arg('path to tailwind binary'),
             ])
