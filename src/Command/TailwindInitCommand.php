@@ -49,8 +49,9 @@ class TailwindInitCommand extends Command
 
     private function createTailwindConfig(SymfonyStyle $io): bool
     {
-        if (file_exists($this->projectDir.'/tailwind.config.js')) {
-            $io->note('tailwind.config.js found: Tailwind CSS is already initialized.');
+        $configFile = $this->tailwindBuilder->getConfigFilePath();
+        if (file_exists($configFile)) {
+            $io->note(sprintf('Tailwind config file already exists in "%s"', $configFile));
 
             return true;
         }
@@ -85,7 +86,7 @@ class TailwindInitCommand extends Command
 
         EOF;
 
-        file_put_contents($this->projectDir.'/tailwind.config.js', $tailwindConfig);
+        file_put_contents($configFile, $tailwindConfig);
 
         return true;
     }
