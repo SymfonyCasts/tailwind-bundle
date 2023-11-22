@@ -24,7 +24,6 @@ class TailwindInitCommand extends Command
 {
     public function __construct(
         private TailwindBuilder $tailwindBuilder,
-        private string $projectDir,
     ) {
         parent::__construct();
     }
