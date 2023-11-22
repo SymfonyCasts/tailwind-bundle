@@ -28,6 +28,7 @@ class TailwindBuilder
     public function __construct(
         private readonly string $projectRootDir,
         string $inputPath,
+        private readonly string $configPath,
         private readonly string $tailwindVarDir,
         private readonly ?string $binaryPath = null,
     ) {
@@ -47,7 +48,7 @@ class TailwindBuilder
         bool $minify,
     ): Process {
         $binary = $this->createBinary();
-        $arguments = ['-i', $this->inputPath, '-o', $this->getInternalOutputCssPath()];
+        $arguments = ['-c', $this->configPath, '-i', $this->inputPath, '-o', $this->getInternalOutputCssPath()];
         if ($watch) {
             $arguments[] = '--watch';
         }
@@ -102,6 +103,11 @@ class TailwindBuilder
     public function getInputCssPath(): string
     {
         return $this->inputPath;
+    }
+
+    public function getConfigFilePath(): string
+    {
+        return $this->configPath;
     }
 
     public function getOutputCssContent(): string
