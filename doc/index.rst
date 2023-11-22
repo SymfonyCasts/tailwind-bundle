@@ -97,6 +97,15 @@ directives):
     symfonycasts_tailwind:
         input_css: 'assets/styles/other.css'
 
+Another option is the ``config_file`` option, which defaults to ``tailwind.config.js``.
+This represents the Tailwind configuration file:
+
+.. code-block:: yaml
+
+    # config/packages/symfonycasts_tailwind.yaml
+    symfonycasts_tailwind:
+        config_file: 'tailwind.config.js'
+
 Using a Different Binary
 ------------------------
 
