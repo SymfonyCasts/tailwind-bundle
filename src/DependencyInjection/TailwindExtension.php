@@ -29,8 +29,8 @@ class TailwindExtension extends Extension implements ConfigurationInterface
 
         $container->findDefinition('tailwind.builder')
             ->replaceArgument(1, $config['input_css'])
-            ->replaceArgument(2, $config['config_file'])
-            ->replaceArgument(4, $config['binary'])
+            ->replaceArgument(3, $config['binary'])
+            ->replaceArgument(4, $config['config_file'])
         ;
     }
 
