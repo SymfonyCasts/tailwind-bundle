@@ -28,9 +28,9 @@ class TailwindBuilder
     public function __construct(
         private readonly string $projectRootDir,
         string $inputPath,
-        private readonly string $configPath,
         private readonly string $tailwindVarDir,
         private readonly ?string $binaryPath = null,
+        private readonly string $configPath = 'tailwind.config.js',
     ) {
         if (is_file($inputPath)) {
             $this->inputPath = $inputPath;
