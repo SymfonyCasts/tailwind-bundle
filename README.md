@@ -107,3 +107,4 @@ To instruct the bundle to use that binary instead, set the `binary` option:
 symfonycasts_tailwind:
     binary: 'node_modules/.bin/tailwindcss'
 ```
+
