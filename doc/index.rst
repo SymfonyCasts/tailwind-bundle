@@ -78,6 +78,13 @@ command so the built file is available:
     $ php bin/console tailwind:build --minify
     $ php bin/console asset-map:compile
 
+Form Theming
+------------
+
+To make your Symfony forms look nice with Tailwind, you'll need a dedicated form theme.
+Check out https://github.com/tales-from-a-dev/flowbite-bundle for a helpful bundle that
+provides that!
+
 Configuration
 -------------
 
