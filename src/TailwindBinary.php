@@ -53,7 +53,7 @@ class TailwindBinary
 
     private function downloadExecutable(): void
     {
-        $url = sprintf('https://github.com/tailwindlabs/tailwindcss/releases/download/%s/%s', self::VERSION, self::getBinaryName());
+        $url = sprintf('https://github.com/tailwindlabs/tailwindcss/releases/download/%s/%s', $this->getLatestVersion(), self::getBinaryName());
 
         $this->output?->note(sprintf('Downloading TailwindCSS binary from %s', $url));
 
@@ -87,6 +87,17 @@ class TailwindBinary
         $this->output?->writeln('');
         // make file executable
         chmod($targetPath, 0777);
+    }
+
+    private function getLatestVersion(): string
+    {
+        try {
+            $response = $this->httpClient->request('GET', 'https://api.github.com/repos/tailwindlabs/tailwindcss/releases/latest');
+
+            return $response->toArray()['name'] ?? self::VERSION;
+        } catch (\Throwable) {
+            return self::VERSION;
+        }
     }
 
     /**

@@ -27,6 +27,7 @@ class TailwindBinaryTest extends TestCase
         $fs->mkdir($binaryDownloadDir);
 
         $client = new MockHttpClient([
+            new MockResponse('{}'),
             new MockResponse('fake binary contents'),
         ]);
 
