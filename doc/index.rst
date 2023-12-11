@@ -85,6 +85,31 @@ To make your Symfony forms look nice with Tailwind, you'll need a dedicated form
 Check out https://github.com/tales-from-a-dev/flowbite-bundle for a helpful bundle that
 provides that!
 
+Tailwind Plugins
+----------------
+
+The Tailwind binary the bundle downloads already contains the "Official Plugins" - e.g. `typography <https://tailwindcss.com/docs/typography-plugin>`_.
+This means you can use those simply by adding the line to the ``plugins`` key in
+``tailwind.config.js`` - e.g. ``require('@tailwindcss/typography')``.
+
+For other plugins - like `Flowbite Datepicker <https://flowbite.com/docs/plugins/datepicker/>`_,
+you will need to follow that package's documentation to `require the package <https://flowbite.com/docs/getting-started/quickstart/#require-via-npm>`_
+with ``npm``:
+
+.. code-block:: terminal
+
+    $ npm install flowbite
+
+Then add it to ``tailwind.config.js``:
+
+.. code-block:: javascript
+
+    module.exports = {
+        plugins: [
+            require('flowbite/plugin')
+        ]
+    }
+
 Configuration
 -------------
 
