@@ -27,11 +27,10 @@ class TailwindBuilderTest extends TestCase
 
     protected function tearDown(): void
     {
+        $fs = new Filesystem();
         $finder = new Finder();
         $finder->in(__DIR__.'/fixtures/var/tailwind');
-        foreach ($finder as $file) {
-            unlink($file->getRealPath());
-        }
+        $fs->remove($finder);
     }
 
     public function testIntegrationWithDefaultOptions(): void
