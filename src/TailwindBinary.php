@@ -94,11 +94,9 @@ class TailwindBinary
         try {
             $response = $this->httpClient->request('GET', 'https://api.github.com/repos/tailwindlabs/tailwindcss/releases/latest');
 
-            return $response->toArray()['name'] ?? self::DEFAULT_VERSION
-    ;
+            return $response->toArray()['name'] ?? self::DEFAULT_VERSION;
         } catch (\Throwable) {
-            return self::DEFAULT_VERSION
-    ;
+            return self::DEFAULT_VERSION;
         }
     }
 
