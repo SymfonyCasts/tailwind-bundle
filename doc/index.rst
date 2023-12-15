@@ -147,3 +147,15 @@ To instruct the bundle to use that binary instead, set the ``binary`` option:
     # config/packages/symfonycasts_tailwind.yaml
     symfonycasts_tailwind:
         binary: 'node_modules/.bin/tailwindcss'
+
+Using a Different Binary Version
+------------------------
+
+By default the latest standalone Tailwind binary gets downloaded. However,
+if you want to use a different version, you can specify the version to use,
+set ``binary_version`` option:
+
+.. code-block:: yaml
+    # config/packages/symfonycasts_tailwind.yaml
+    symfonycasts_tailwind:
+        binary_version: 'v3.3.0'
