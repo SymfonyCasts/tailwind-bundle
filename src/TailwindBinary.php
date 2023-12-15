@@ -100,7 +100,7 @@ class TailwindBinary
         try {
             $response = $this->httpClient->request('GET', 'https://api.github.com/repos/tailwindlabs/tailwindcss/releases/latest');
 
-            return $response->toArray()['name'] ?? throw new \Exception('Cannot get version name from response JSON.');
+            return $response->toArray()['name'] ?? throw new \Exception('Cannot get the latest version name from response JSON.');
         } catch (\Throwable $e) {
             throw new \Exception('Cannot determine latest Tailwind CLI binary version. Please specify a version in the configuration.', previous: $e);
         }

@@ -61,7 +61,7 @@ class TailwindExtension extends Extension implements ConfigurationInterface
                     ->defaultNull()
                 ->end()
                 ->scalarNode('binary_version')
-                    ->info('Tailwind CLI version to download - null means latest version')
+                    ->info('Tailwind CLI version to download - null means the latest version')
                     ->defaultNull()
                 ->end()
             ->end();

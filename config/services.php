@@ -19,7 +19,7 @@ return static function (ContainerConfigurator $container): void {
                 abstract_arg('path to source Tailwind CSS file'),
                 param('kernel.project_dir').'/var/tailwind',
                 abstract_arg('path to tailwind binary'),
-                abstract_arg('tailwind binary version'),
+                abstract_arg('Tailwind binary version'),
             ])
 
         ->set('tailwind.command.build', TailwindBuildCommand::class)
