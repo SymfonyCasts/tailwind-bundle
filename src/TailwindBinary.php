@@ -21,7 +21,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 class TailwindBinary
 {
-    private const VERSION = 'v3.3.5';
+    private const DEFAULT_VERSION = 'v3.3.5';
     private HttpClientInterface $httpClient;
 
     public function __construct(
@@ -94,9 +94,11 @@ class TailwindBinary
         try {
             $response = $this->httpClient->request('GET', 'https://api.github.com/repos/tailwindlabs/tailwindcss/releases/latest');
 
-            return $response->toArray()['name'] ?? self::VERSION;
+            return $response->toArray()['name'] ?? self::DEFAULT_VERSION
+    ;
         } catch (\Throwable) {
-            return self::VERSION;
+            return self::DEFAULT_VERSION
+    ;
         }
     }
 
