@@ -21,13 +21,13 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 class TailwindBinary
 {
-    private const VERSION = 'v3.3.5';
     private HttpClientInterface $httpClient;
 
     public function __construct(
         private string $binaryDownloadDir,
         private string $cwd,
         private ?string $binaryPath,
+        private ?string $binaryVersion,
         private ?SymfonyStyle $output = null,
         HttpClientInterface $httpClient = null,
     ) {
@@ -53,7 +53,7 @@ class TailwindBinary
 
     private function downloadExecutable(): void
     {
-        $url = sprintf('https://github.com/tailwindlabs/tailwindcss/releases/download/%s/%s', self::VERSION, self::getBinaryName());
+        $url = sprintf('https://github.com/tailwindlabs/tailwindcss/releases/download/%s/%s', $this->getVersion(), self::getBinaryName());
 
         $this->output?->note(sprintf('Downloading TailwindCSS binary from %s', $url));
 
@@ -78,6 +78,14 @@ class TailwindBinary
                 $progressBar?->setProgress($dlNow);
             },
         ]);
+
+        if (404 === $response->getStatusCode()) {
+            if (null !== $this->binaryVersion) {
+                throw new \Exception(sprintf('Cannot download Tailwind CLI binary. Please verify configured version `%s` exists for your machine.', $this->binaryVersion));
+            }
+            throw new \Exception(sprintf('Cannot download latest Tailwind CLI binary. Response code: %d', $response->getStatusCode()));
+        }
+
         $fileHandler = fopen($targetPath, 'w');
         foreach ($this->httpClient->stream($response) as $chunk) {
             fwrite($fileHandler, $chunk->getContent());
@@ -87,6 +95,21 @@ class TailwindBinary
         $this->output?->writeln('');
         // make file executable
         chmod($targetPath, 0777);
+    }
+
+    private function getVersion(): string
+    {
+        if ($this->binaryVersion) {
+            return $this->binaryVersion;
+        }
+
+        try {
+            $response = $this->httpClient->request('GET', 'https://api.github.com/repos/tailwindlabs/tailwindcss/releases/latest');
+
+            return $response->toArray()['name'] ?? throw new \Exception('Cannot get vesion from response JSON.');
+        } catch (\Throwable $e) {
+            throw new \Exception('Cannot determine latest Tailwind CLI binary version. Please specify a version in the configuration.', previous: $e);
+        }
     }
 
     /**
