@@ -148,7 +148,7 @@ To instruct the bundle to use that binary instead, set the ``binary`` option:
     symfonycasts_tailwind:
         binary: 'node_modules/.bin/tailwindcss'
 
-Using a Different Version
+Using a Different Binary Version
 ------------------------
 
 By default the latest standalone Tailwind binary gets downloaded. However,
