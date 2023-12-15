@@ -27,7 +27,6 @@ class TailwindBuilderTest extends TestCase
 
     protected function tearDown(): void
     {
-        // trigger a new build to see any random fails in this
         $finder = new Finder();
         $finder->in(__DIR__.'/fixtures/var/tailwind')->files();
         foreach ($finder as $file) {
