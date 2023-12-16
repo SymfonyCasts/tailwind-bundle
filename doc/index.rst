@@ -78,6 +78,38 @@ command so the built file is available:
     $ php bin/console tailwind:build --minify
     $ php bin/console asset-map:compile
 
+Form Theming
+------------
+
+To make your Symfony forms look nice with Tailwind, you'll need a dedicated form theme.
+Check out https://github.com/tales-from-a-dev/flowbite-bundle for a helpful bundle that
+provides that!
+
+Tailwind Plugins
+----------------
+
+The Tailwind binary the bundle downloads already contains the "Official Plugins" - e.g. `typography <https://tailwindcss.com/docs/typography-plugin>`_.
+This means you can use those simply by adding the line to the ``plugins`` key in
+``tailwind.config.js`` - e.g. ``require('@tailwindcss/typography')``.
+
+For other plugins - like `Flowbite Datepicker <https://flowbite.com/docs/plugins/datepicker/>`_,
+you will need to follow that package's documentation to `require the package <https://flowbite.com/docs/getting-started/quickstart/#require-via-npm>`_
+with ``npm``:
+
+.. code-block:: terminal
+
+    $ npm install flowbite
+
+Then add it to ``tailwind.config.js``:
+
+.. code-block:: javascript
+
+    module.exports = {
+        plugins: [
+            require('flowbite/plugin')
+        ]
+    }
+
 Configuration
 -------------
 
@@ -124,3 +156,15 @@ To instruct the bundle to use that binary instead, set the ``binary`` option:
     # config/packages/symfonycasts_tailwind.yaml
     symfonycasts_tailwind:
         binary: 'node_modules/.bin/tailwindcss'
+
+Using a Different Binary Version
+------------------------
+
+By default the latest standalone Tailwind binary gets downloaded. However,
+if you want to use a different version, you can specify the version to use,
+set ``binary_version`` option:
+
+.. code-block:: yaml
+    # config/packages/symfonycasts_tailwind.yaml
+    symfonycasts_tailwind:
+        binary_version: 'v3.3.0'

@@ -30,15 +30,15 @@ class TailwindBinaryTest extends TestCase
             new MockResponse('fake binary contents'),
         ]);
 
-        $binary = new TailwindBinary($binaryDownloadDir, __DIR__, null, null, $client);
+        $binary = new TailwindBinary($binaryDownloadDir, __DIR__, null, 'fake-version', null, $client);
         $process = $binary->createProcess(['-i', 'fake.css']);
-        $this->assertFileExists($binaryDownloadDir.'/'.TailwindBinary::getBinaryName());
+        $this->assertFileExists($binaryDownloadDir.'/fake-version/'.TailwindBinary::getBinaryName());
 
         // Windows doesn't wrap arguments in quotes
         $expectedTemplate = '\\' === \DIRECTORY_SEPARATOR ? '"%s" -i fake.css' : "'%s' '-i' 'fake.css'";
 
         $this->assertSame(
-            sprintf($expectedTemplate, $binaryDownloadDir.'/'.TailwindBinary::getBinaryName()),
+            sprintf($expectedTemplate, $binaryDownloadDir.'/fake-version/'.TailwindBinary::getBinaryName()),
             $process->getCommandLine()
         );
     }
@@ -47,7 +47,7 @@ class TailwindBinaryTest extends TestCase
     {
         $client = new MockHttpClient();
 
-        $binary = new TailwindBinary('', __DIR__, 'custom-binary', null, $client);
+        $binary = new TailwindBinary('', __DIR__, 'custom-binary', null, null, null, $client);
         $process = $binary->createProcess(['-i', 'fake.css']);
         // on windows, arguments are not wrapped in quotes
         $expected = '\\' === \DIRECTORY_SEPARATOR ? 'custom-binary -i fake.css' : "'custom-binary' '-i' 'fake.css'";

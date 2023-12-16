@@ -21,13 +21,14 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 class TailwindBinary
 {
-    private const VERSION = 'v3.3.5';
     private HttpClientInterface $httpClient;
+    private ?string $cachedVersion = null;
 
     public function __construct(
         private string $binaryDownloadDir,
         private string $cwd,
         private ?string $binaryPath,
+        private ?string $binaryVersion,
         private ?SymfonyStyle $output = null,
         HttpClientInterface $httpClient = null,
     ) {
@@ -37,7 +38,7 @@ class TailwindBinary
     public function createProcess(array $arguments = []): Process
     {
         if (null === $this->binaryPath) {
-            $binary = $this->binaryDownloadDir.'/'.self::getBinaryName();
+            $binary = $this->binaryDownloadDir.'/'.$this->getVersion().'/'.self::getBinaryName();
             if (!is_file($binary)) {
                 $this->downloadExecutable();
             }
@@ -53,15 +54,15 @@ class TailwindBinary
 
     private function downloadExecutable(): void
     {
-        $url = sprintf('https://github.com/tailwindlabs/tailwindcss/releases/download/%s/%s', self::VERSION, self::getBinaryName());
+        $url = sprintf('https://github.com/tailwindlabs/tailwindcss/releases/download/%s/%s', $this->getVersion(), self::getBinaryName());
 
         $this->output?->note(sprintf('Downloading TailwindCSS binary from %s', $url));
 
-        if (!is_dir($this->binaryDownloadDir)) {
-            mkdir($this->binaryDownloadDir, 0777, true);
+        if (!is_dir($this->binaryDownloadDir.'/'.$this->getVersion())) {
+            mkdir($this->binaryDownloadDir.'/'.$this->getVersion(), 0777, true);
         }
 
-        $targetPath = $this->binaryDownloadDir.'/'.self::getBinaryName();
+        $targetPath = $this->binaryDownloadDir.'/'.$this->getVersion().'/'.self::getBinaryName();
         $progressBar = null;
 
         $response = $this->httpClient->request('GET', $url, [
@@ -87,6 +88,22 @@ class TailwindBinary
         $this->output?->writeln('');
         // make file executable
         chmod($targetPath, 0777);
+    }
+
+    private function getVersion(): string
+    {
+        return $this->cachedVersion ??= $this->binaryVersion ?? $this->getLatestVersion();
+    }
+
+    private function getLatestVersion(): string
+    {
+        try {
+            $response = $this->httpClient->request('GET', 'https://api.github.com/repos/tailwindlabs/tailwindcss/releases/latest');
+
+            return $response->toArray()['name'] ?? throw new \Exception('Cannot get the latest version name from response JSON.');
+        } catch (\Throwable $e) {
+            throw new \Exception('Cannot determine latest Tailwind CLI binary version. Please specify a version in the configuration.', previous: $e);
+        }
     }
 
     /**
