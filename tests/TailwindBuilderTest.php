@@ -41,6 +41,7 @@ class TailwindBuilderTest extends TestCase
             __DIR__.'/fixtures/assets/styles/app.css',
             __DIR__.'/fixtures/var/tailwind',
             null,
+            null,
             __DIR__.'/fixtures/tailwind.config.js'
         );
         $process = $builder->runBuild(watch: false, minify: false);
@@ -59,6 +60,7 @@ class TailwindBuilderTest extends TestCase
             __DIR__.'/fixtures',
             __DIR__.'/fixtures/assets/styles/app.css',
             __DIR__.'/fixtures/var/tailwind',
+            null,
             null,
             __DIR__.'/fixtures/tailwind.config.js'
         );
