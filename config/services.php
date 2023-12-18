@@ -20,6 +20,7 @@ return static function (ContainerConfigurator $container): void {
                 param('kernel.project_dir').'/var/tailwind',
                 abstract_arg('path to tailwind binary'),
                 abstract_arg('Tailwind binary version'),
+                abstract_arg('path to Tailwind CSS config file'),
             ])
 
         ->set('tailwind.command.build', TailwindBuildCommand::class)
@@ -31,7 +32,6 @@ return static function (ContainerConfigurator $container): void {
         ->set('tailwind.command.init', TailwindInitCommand::class)
             ->args([
                 service('tailwind.builder'),
-                param('kernel.project_dir'),
             ])
             ->tag('console.command')
 

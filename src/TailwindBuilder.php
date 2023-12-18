@@ -31,6 +31,7 @@ class TailwindBuilder
         private readonly string $tailwindVarDir,
         private readonly ?string $binaryPath = null,
         private readonly ?string $binaryVersion = null,
+        private readonly string $configPath = 'tailwind.config.js',
     ) {
         if (is_file($inputPath)) {
             $this->inputPath = $inputPath;
@@ -48,7 +49,7 @@ class TailwindBuilder
         bool $minify,
     ): Process {
         $binary = $this->createBinary();
-        $arguments = ['-i', $this->inputPath, '-o', $this->getInternalOutputCssPath()];
+        $arguments = ['-c', $this->configPath, '-i', $this->inputPath, '-o', $this->getInternalOutputCssPath()];
         if ($watch) {
             $arguments[] = '--watch';
         }
@@ -103,6 +104,11 @@ class TailwindBuilder
     public function getInputCssPath(): string
     {
         return $this->inputPath;
+    }
+
+    public function getConfigFilePath(): string
+    {
+        return $this->configPath;
     }
 
     public function getOutputCssContent(): string

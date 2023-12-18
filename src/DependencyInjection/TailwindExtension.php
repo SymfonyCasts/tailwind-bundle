@@ -31,6 +31,7 @@ class TailwindExtension extends Extension implements ConfigurationInterface
             ->replaceArgument(1, $config['input_css'])
             ->replaceArgument(3, $config['binary'])
             ->replaceArgument(4, $config['binary_version'])
+            ->replaceArgument(5, $config['config_file'])
         ;
     }
 
@@ -55,6 +56,10 @@ class TailwindExtension extends Extension implements ConfigurationInterface
                 ->scalarNode('input_css')
                     ->info('Path to CSS file to process through Tailwind')
                     ->defaultValue('%kernel.project_dir%/assets/styles/app.css')
+                ->end()
+                ->scalarNode('config_file')
+                    ->info('Path to the tailwind.config.js file')
+                    ->defaultValue('%kernel.project_dir%/tailwind.config.js')
                 ->end()
                 ->scalarNode('binary')
                     ->info('The tailwind binary to use instead of downloading a new one')
