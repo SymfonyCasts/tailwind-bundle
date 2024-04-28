@@ -23,4 +23,4 @@ Symfony (and learn a bucket-load) by grabbing a subscription to [SymfonyCasts](h
 
 ## License
 
-MIT License (MIT): see the [License File](LICENSE.md) for more details..
+MIT License (MIT): see the [License File](LICENSE.md) for more details.
