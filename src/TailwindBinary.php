@@ -104,6 +104,10 @@ class TailwindBinary
         try {
             $response = $this->httpClient->request('GET', 'https://api.github.com/repos/tailwindlabs/tailwindcss/releases/latest');
 
+            if (\in_array($response->getStatusCode(), [403, 429]) && (0 == $response->getHeaders(false)['x-ratelimit-remaining'][0])) {
+                throw new \Exception('GitHub rate limit exceeded. You can increase it by setting GITHUB_TOKEN as an environment variable.');
+            }
+
             return $response->toArray()['name'] ?? throw new \Exception('Cannot get the latest version name from response JSON.');
         } catch (\Throwable $e) {
             throw new \Exception('Cannot determine latest Tailwind CLI binary version. Please specify a version in the configuration.', previous: $e);
