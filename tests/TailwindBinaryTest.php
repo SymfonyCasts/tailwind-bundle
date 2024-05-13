@@ -45,9 +45,7 @@ class TailwindBinaryTest extends TestCase
 
     public function testCustomBinaryUsed()
     {
-        $client = new MockHttpClient();
-
-        $binary = new TailwindBinary('', __DIR__, 'custom-binary', null, null, null, $client);
+        $binary = new TailwindBinary('', __DIR__, 'custom-binary', null, null);
         $process = $binary->createProcess(['-i', 'fake.css']);
         // on windows, arguments are not wrapped in quotes
         $expected = '\\' === \DIRECTORY_SEPARATOR ? 'custom-binary -i fake.css' : "'custom-binary' '-i' 'fake.css'";
