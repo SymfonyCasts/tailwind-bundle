@@ -179,7 +179,7 @@ To instruct the bundle to use that binary instead, set the ``binary`` option:
         binary: 'node_modules/.bin/tailwindcss'
 
 Using a Different Binary Version
-------------------------
+--------------------------------
 
 By default the latest standalone Tailwind binary gets downloaded. However,
 if you want to use a different version, you can specify the version to use,
@@ -189,3 +189,12 @@ set ``binary_version`` option:
     # config/packages/symfonycasts_tailwind.yaml
     symfonycasts_tailwind:
         binary_version: 'v3.3.0'
+
+
+Github rate limits
+------------------
+
+Default Github rate limit for unauthenticated requests is 60 requests per hour.
+If you provide a Github token with public repositories scope, you may increase this
+limit to 5000 req/h. See more about `Github limits <https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api/>`_
+Set this token as ``GITHUB_TOKEN`` env variable.
