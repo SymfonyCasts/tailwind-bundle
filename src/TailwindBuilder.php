@@ -32,6 +32,7 @@ class TailwindBuilder
         private readonly ?string $binaryPath = null,
         private readonly ?string $binaryVersion = null,
         private readonly string $configPath = 'tailwind.config.js',
+        private readonly ?string $githubToken = null,
     ) {
         if (is_file($inputPath)) {
             $this->inputPath = $inputPath;
@@ -122,6 +123,6 @@ class TailwindBuilder
 
     private function createBinary(): TailwindBinary
     {
-        return new TailwindBinary($this->tailwindVarDir, $this->projectRootDir, $this->binaryPath, $this->binaryVersion, $this->output);
+        return new TailwindBinary($this->tailwindVarDir, $this->projectRootDir, $this->binaryPath, $this->binaryVersion, $this->output, githubToken: $this->githubToken);
     }
 }

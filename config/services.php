@@ -21,6 +21,7 @@ return static function (ContainerConfigurator $container): void {
                 abstract_arg('path to tailwind binary'),
                 abstract_arg('Tailwind binary version'),
                 abstract_arg('path to Tailwind CSS config file'),
+                param('tailwind.github_token'),
             ])
 
         ->set('tailwind.command.build', TailwindBuildCommand::class)
@@ -44,4 +45,6 @@ return static function (ContainerConfigurator $container): void {
                 'priority' => 10,
             ])
     ;
+    $container->parameters()
+        ->set('tailwind.github_token', '%env(default::GITHUB_TOKEN)%');
 };

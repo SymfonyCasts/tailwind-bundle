@@ -31,8 +31,12 @@ class TailwindBinary
         private ?string $binaryVersion,
         private ?SymfonyStyle $output = null,
         ?HttpClientInterface $httpClient = null,
+        private ?string $githubToken = null,
     ) {
         $this->httpClient = $httpClient ?? HttpClient::create();
+        if (null !== $this->githubToken) {
+            $this->httpClient = $this->httpClient->withOptions(['headers' => ['Authorization' => 'Bearer '.$this->githubToken]]);
+        }
     }
 
     public function createProcess(array $arguments = []): Process
