@@ -10,6 +10,7 @@
 namespace Symfonycasts\TailwindBundle\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfonycasts\TailwindBundle\TailwindBuilder;
@@ -40,6 +41,7 @@ class TailwindBuilderTest extends TestCase
             __DIR__.'/fixtures',
             __DIR__.'/fixtures/assets/styles/app.css',
             __DIR__.'/fixtures/var/tailwind',
+            new ArrayAdapter(),
             null,
             null,
             __DIR__.'/fixtures/tailwind.config.js'
@@ -60,6 +62,7 @@ class TailwindBuilderTest extends TestCase
             __DIR__.'/fixtures',
             __DIR__.'/fixtures/assets/styles/app.css',
             __DIR__.'/fixtures/var/tailwind',
+            new ArrayAdapter(),
             null,
             null,
             __DIR__.'/fixtures/tailwind.config.js'
