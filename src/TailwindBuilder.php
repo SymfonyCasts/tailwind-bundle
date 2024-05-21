@@ -12,6 +12,7 @@ namespace Symfonycasts\TailwindBundle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\InputStream;
 use Symfony\Component\Process\Process;
+use Symfony\Contracts\Cache\CacheInterface;
 
 /**
  * Manages the process of executing Tailwind on the input file.
@@ -29,9 +30,10 @@ class TailwindBuilder
         private readonly string $projectRootDir,
         string $inputPath,
         private readonly string $tailwindVarDir,
+        private CacheInterface $cache,
         private readonly ?string $binaryPath = null,
         private readonly ?string $binaryVersion = null,
-        private readonly string $configPath = 'tailwind.config.js',
+        private readonly string $configPath = 'tailwind.config.js'
     ) {
         if (is_file($inputPath)) {
             $this->inputPath = $inputPath;
@@ -122,6 +124,6 @@ class TailwindBuilder
 
     private function createBinary(): TailwindBinary
     {
-        return new TailwindBinary($this->tailwindVarDir, $this->projectRootDir, $this->binaryPath, $this->binaryVersion, $this->output);
+        return new TailwindBinary($this->tailwindVarDir, $this->projectRootDir, $this->binaryPath, $this->binaryVersion, $this->cache, $this->output);
     }
 }

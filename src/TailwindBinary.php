@@ -9,9 +9,11 @@
 
 namespace Symfonycasts\TailwindBundle;
 
+use Psr\Cache\CacheItemInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Process\Process;
+use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
@@ -29,8 +31,9 @@ class TailwindBinary
         private string $cwd,
         private ?string $binaryPath,
         private ?string $binaryVersion,
+        private CacheInterface $cache,
         private ?SymfonyStyle $output = null,
-        ?HttpClientInterface $httpClient = null,
+        ?HttpClientInterface $httpClient = null
     ) {
         $this->httpClient = $httpClient ?? HttpClient::create();
     }
@@ -97,13 +100,16 @@ class TailwindBinary
 
     private function getLatestVersion(): string
     {
-        try {
-            $response = $this->httpClient->request('GET', 'https://api.github.com/repos/tailwindlabs/tailwindcss/releases/latest');
+        return $this->cache->get('latestVersion', function (CacheItemInterface $item) {
+            $item->expiresAfter(3600);
+            try {
+                $response = $this->httpClient->request('GET', 'https://api.github.com/repos/tailwindlabs/tailwindcss/releases/latest');
 
-            return $response->toArray()['name'] ?? throw new \Exception('Cannot get the latest version name from response JSON.');
-        } catch (\Throwable $e) {
-            throw new \Exception('Cannot determine latest Tailwind CLI binary version. Please specify a version in the configuration.', previous: $e);
-        }
+                return $response->toArray()['name'] ?? throw new \Exception('Cannot get the latest version name from response JSON.');
+            } catch (\Throwable $e) {
+                throw new \Exception('Cannot determine latest Tailwind CLI binary version. Please specify a version in the configuration.', previous: $e);
+            }
+        });
     }
 
     /**

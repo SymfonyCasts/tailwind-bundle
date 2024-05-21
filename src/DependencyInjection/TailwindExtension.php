@@ -14,8 +14,8 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class TailwindExtension extends Extension implements ConfigurationInterface
 {
@@ -29,9 +29,9 @@ class TailwindExtension extends Extension implements ConfigurationInterface
 
         $container->findDefinition('tailwind.builder')
             ->replaceArgument(1, $config['input_css'])
-            ->replaceArgument(3, $config['binary'])
-            ->replaceArgument(4, $config['binary_version'])
-            ->replaceArgument(5, $config['config_file'])
+            ->replaceArgument(4, $config['binary'])
+            ->replaceArgument(5, $config['binary_version'])
+            ->replaceArgument(6, $config['config_file'])
         ;
     }
 

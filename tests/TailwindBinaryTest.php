@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
+use Symfony\Contracts\Cache\CacheInterface;
 use Symfonycasts\TailwindBundle\TailwindBinary;
 
 class TailwindBinaryTest extends TestCase
@@ -29,8 +30,9 @@ class TailwindBinaryTest extends TestCase
         $client = new MockHttpClient([
             new MockResponse('fake binary contents'),
         ]);
+        $cache = $this->createMock(CacheInterface::class);
 
-        $binary = new TailwindBinary($binaryDownloadDir, __DIR__, null, 'fake-version', null, $client);
+        $binary = new TailwindBinary($binaryDownloadDir, __DIR__, null, 'fake-version', $cache, null, $client);
         $process = $binary->createProcess(['-i', 'fake.css']);
         $this->assertFileExists($binaryDownloadDir.'/fake-version/'.TailwindBinary::getBinaryName());
 
@@ -46,8 +48,9 @@ class TailwindBinaryTest extends TestCase
     public function testCustomBinaryUsed()
     {
         $client = new MockHttpClient();
+        $cache = $this->createMock(CacheInterface::class);
 
-        $binary = new TailwindBinary('', __DIR__, 'custom-binary', null, null, null, $client);
+        $binary = new TailwindBinary('', __DIR__, 'custom-binary', null, $cache, null, $client);
         $process = $binary->createProcess(['-i', 'fake.css']);
         // on windows, arguments are not wrapped in quotes
         $expected = '\\' === \DIRECTORY_SEPARATOR ? 'custom-binary -i fake.css' : "'custom-binary' '-i' 'fake.css'";
