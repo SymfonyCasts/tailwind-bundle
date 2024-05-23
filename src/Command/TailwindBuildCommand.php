@@ -33,6 +33,7 @@ class TailwindBuildCommand extends Command
     {
         $this
             ->addOption('watch', 'w', null, 'Watch for changes and rebuild automatically')
+            ->addOption('poll-watch', null, null, 'Watch for changes and rebuild automatically (with --poll flag)')
             ->addOption('minify', 'm', InputOption::VALUE_NONE, 'Minify the output CSS')
         ;
     }
@@ -44,6 +45,7 @@ class TailwindBuildCommand extends Command
 
         $process = $this->tailwindBuilder->runBuild(
             watch: $input->getOption('watch'),
+            pollWatch: $input->getOption('poll-watch'),
             minify: $input->getOption('minify'),
         );
         $process->wait(function ($type, $buffer) use ($io) {
