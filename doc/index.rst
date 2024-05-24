@@ -59,11 +59,11 @@ Watch mode in Docker with Windows host
 
 If you work on Windows and your app is running in a Docker container, and you
 are having trouble with the ``--watch`` option, you can try runnig the ``tailwind:build``
-command with ``--poll-watch`` option.
+command with ``--poll`` option.
 
 .. code-block:: terminal
 
-    $ php bin/console tailwind:build --poll-watch
+    $ php bin/console tailwind:build --watch --poll
 
 Symfony CLI
 ~~~~~~~~~~~

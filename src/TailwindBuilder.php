@@ -48,22 +48,22 @@ class TailwindBuilder
 
     public function runBuild(
         bool $watch,
-        bool $pollWatch,
+        bool $poll,
         bool $minify,
     ): Process {
         $binary = $this->createBinary();
         $arguments = ['-c', $this->configPath, '-i', $this->inputPath, '-o', $this->getInternalOutputCssPath()];
         if ($watch) {
             $arguments[] = '--watch';
-        } elseif ($pollWatch) {
-            $arguments[] = '--watch';
-            $arguments[] = '--poll';
+            if ($poll) {
+                $arguments[] = '--poll';
+            }
         }
         if ($minify) {
             $arguments[] = '--minify';
         }
         $process = $binary->createProcess($arguments);
-        if ($watch || $pollWatch) {
+        if ($watch) {
             $process->setTimeout(null);
             // setting an input stream causes the command to "wait" for the watch
             $inputStream = new InputStream();
