@@ -33,7 +33,7 @@ class TailwindBuildCommand extends Command
     {
         $this
             ->addOption('watch', 'w', null, 'Watch for changes and rebuild automatically')
-            ->addOption('poll', null, null, 'Apply --poll flag to the command')
+            ->addOption('poll', null, null, 'Use polling instead of filesystem events when watching')
             ->addOption('minify', 'm', InputOption::VALUE_NONE, 'Minify the output CSS')
         ;
     }
