@@ -48,12 +48,16 @@ class TailwindBuilder
 
     public function runBuild(
         bool $watch,
+        bool $poll,
         bool $minify,
     ): Process {
         $binary = $this->createBinary();
         $arguments = ['-c', $this->configPath, '-i', $this->inputPath, '-o', $this->getInternalOutputCssPath()];
         if ($watch) {
             $arguments[] = '--watch';
+            if ($poll) {
+                $arguments[] = '--poll';
+            }
         }
         if ($minify) {
             $arguments[] = '--minify';

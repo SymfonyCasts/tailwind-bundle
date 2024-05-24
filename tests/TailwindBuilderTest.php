@@ -46,7 +46,7 @@ class TailwindBuilderTest extends TestCase
             null,
             __DIR__.'/fixtures/tailwind.config.js'
         );
-        $process = $builder->runBuild(watch: false, minify: false);
+        $process = $builder->runBuild(watch: false, poll: false, minify: false);
         $process->wait();
 
         $this->assertTrue($process->isSuccessful());
@@ -67,7 +67,7 @@ class TailwindBuilderTest extends TestCase
             null,
             __DIR__.'/fixtures/tailwind.config.js'
         );
-        $process = $builder->runBuild(watch: false, minify: true);
+        $process = $builder->runBuild(watch: false, poll: false, minify: true);
         $process->wait();
 
         $this->assertTrue($process->isSuccessful());

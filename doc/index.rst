@@ -54,6 +54,17 @@ That's it! This will watch for changes to your ``assets/styles/app.css`` file
 and automatically recompile it when needed. If you refresh the page, the
 final ``app.css`` file will already contain the compiled CSS.
 
+Watch mode in Docker with Windows host
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you work on Windows and your app is running in a Docker container, and you
+are having trouble with the ``--watch`` option, you can try runnig the ``tailwind:build``
+command with ``--poll`` option.
+
+.. code-block:: terminal
+
+    $ php bin/console tailwind:build --watch --poll
+
 Symfony CLI
 ~~~~~~~~~~~
 
