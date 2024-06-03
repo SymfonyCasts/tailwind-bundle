@@ -22,7 +22,7 @@ class TailwindCssAssetCompilerTest extends TestCase
         $builder = $this->createMock(TailwindBuilder::class);
         $builder->expects($this->any())
             ->method('getInputCssPaths')
-            ->willReturn([\dirname(__DIR__).'/fixtures/assets/styles/app.css']);
+            ->willReturn([realpath(__DIR__.'/../fixtures/assets/styles/app.css')]);
         $builder->expects($this->once())
             ->method('getInternalOutputCssPath');
         $builder->expects($this->once())
