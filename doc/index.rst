@@ -151,15 +151,16 @@ To see the full config from this bundle, run:
 
     $ php bin/console config:dump symfonycasts_tailwind
 
-The main option is ``input_css`` option, which defaults to ``assets/styles/app.css``.
-This represents the "source" Tailwind file (the one that contains the ``@tailwind``
+The main option is ``input`` option, which defaults to ``assets/styles/app.css``.
+This represents the "source" Tailwind files (the one that contains the ``@tailwind``
 directives):
 
 .. code-block:: yaml
 
     # config/packages/symfonycasts_tailwind.yaml
     symfonycasts_tailwind:
-        input_css: 'assets/styles/other.css'
+        input:
+            - 'assets/styles/other.css'
 
 Another option is the ``config_file`` option, which defaults to ``tailwind.config.js``.
 This represents the Tailwind configuration file:
