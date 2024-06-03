@@ -44,15 +44,15 @@ class TailwindBuilder
     }
 
     public function runBuild(
-        bool    $watch,
-        bool    $poll,
-        bool    $minify,
+        bool $watch,
+        bool $poll,
+        bool $minify,
         ?string $inputFile = null,
     ): Process {
         $binary = $this->createBinary();
 
         $inputPath = realpath($this->validateInputFile($inputFile ?? $this->inputPaths[0]));
-        if (!in_array($inputPath, $this->inputPaths)) {
+        if (!\in_array($inputPath, $this->inputPaths)) {
             throw new \InvalidArgumentException(sprintf('The input CSS file "%s" is not one of the configured input files.', $inputPath));
         }
 
@@ -108,7 +108,8 @@ class TailwindBuilder
 
     public function getInternalOutputCssPath(string $inputPath): string
     {
-        $inputFileName = pathinfo($inputPath, PATHINFO_FILENAME);
+        $inputFileName = pathinfo($inputPath, \PATHINFO_FILENAME);
+
         return "{$this->tailwindVarDir}/{$inputFileName}.built.css";
     }
 
