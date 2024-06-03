@@ -51,7 +51,7 @@ class TailwindBuilder
     ): Process {
         $binary = $this->createBinary();
 
-        $inputPath = realpath($this->validateInputFile($inputFile ?? $this->inputPaths[0]));
+        $inputPath = $this->validateInputFile($inputFile ?? $this->inputPaths[0]);
         if (!\in_array($inputPath, $this->inputPaths)) {
             throw new \InvalidArgumentException(sprintf('The input CSS file "%s" is not one of the configured input files.', $inputPath));
         }
@@ -135,11 +135,11 @@ class TailwindBuilder
     private function validateInputFile(string $inputPath): string
     {
         if (is_file($inputPath)) {
-            return $inputPath;
+            return realpath($inputPath);
         }
 
         if (is_file($this->projectRootDir.'/'.$inputPath)) {
-            return $this->projectRootDir.'/'.$inputPath;
+            return realpath($this->projectRootDir.'/'.$inputPath);
         }
 
         throw new \InvalidArgumentException(sprintf('The input CSS file "%s" does not exist.', $inputPath));

@@ -27,7 +27,7 @@ class TailwindCssAssetCompiler implements AssetCompilerInterface
     {
         return \in_array(
             realpath($asset->sourcePath),
-            array_map('realpath', $this->tailwindBuilder->getInputCssPaths())
+            $this->tailwindBuilder->getInputCssPaths(),
         );
     }
 
