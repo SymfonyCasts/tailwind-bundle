@@ -123,7 +123,7 @@ class TailwindBuilder
         return $this->configPath;
     }
 
-    public function getOutputCssContent(?string $inputFile = null): string
+    public function getOutputCssContent(string $inputFile): string
     {
         if (!is_file($this->getInternalOutputCssPath($inputFile))) {
             throw new \RuntimeException('Built Tailwind CSS file does not exist: run "php bin/console tailwind:build" to generate it');
