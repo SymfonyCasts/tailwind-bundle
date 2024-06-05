@@ -94,9 +94,11 @@ download the correct Tailwind binary for your system into a ``var/tailwind/``
 directory.
 
 When you run ``tailwind:build``, that binary is used to compile
-your CSS file into a ``var/tailwind/tailwind.built.css`` file. Finally,
-when the contents of ``assets/styles/app.css`` is requested, the bundle
-swaps the contents of that file with the contents of ``var/tailwind/tailwind.built.css``.
+each CSS file into a ``var/tailwind/<filename>.built.css`` file.
+Finally, when the contents of the CSS file is requested, the bundle swaps the
+contents of that file with the contents of ``var/tailwind/<filename>.built.css``.
+
+E.g. : A request for ``assets/styles/app.css`` will be replaced by ``var/tailwind/app.built.css``.
 Nice!
 
 Deploying
