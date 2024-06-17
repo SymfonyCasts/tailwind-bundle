@@ -39,7 +39,7 @@ class TailwindBuilderTest extends TestCase
     {
         $builder = new TailwindBuilder(
             __DIR__.'/fixtures',
-            __DIR__.'/fixtures/assets/styles/app.css',
+            [__DIR__.'/fixtures/assets/styles/app.css'],
             __DIR__.'/fixtures/var/tailwind',
             new ArrayAdapter(),
             null,
@@ -50,9 +50,9 @@ class TailwindBuilderTest extends TestCase
         $process->wait();
 
         $this->assertTrue($process->isSuccessful());
-        $this->assertFileExists(__DIR__.'/fixtures/var/tailwind/tailwind.built.css');
+        $this->assertFileExists(__DIR__.'/fixtures/var/tailwind/app.built.css');
 
-        $outputFileContents = file_get_contents(__DIR__.'/fixtures/var/tailwind/tailwind.built.css');
+        $outputFileContents = file_get_contents(__DIR__.'/fixtures/var/tailwind/app.built.css');
         $this->assertStringContainsString("body {\n  background-color: red;\n}", $outputFileContents, 'The output file should contain non-minified CSS.');
     }
 
@@ -60,7 +60,7 @@ class TailwindBuilderTest extends TestCase
     {
         $builder = new TailwindBuilder(
             __DIR__.'/fixtures',
-            __DIR__.'/fixtures/assets/styles/app.css',
+            [__DIR__.'/fixtures/assets/styles/app.css'],
             __DIR__.'/fixtures/var/tailwind',
             new ArrayAdapter(),
             null,
@@ -71,9 +71,30 @@ class TailwindBuilderTest extends TestCase
         $process->wait();
 
         $this->assertTrue($process->isSuccessful());
-        $this->assertFileExists(__DIR__.'/fixtures/var/tailwind/tailwind.built.css');
+        $this->assertFileExists(__DIR__.'/fixtures/var/tailwind/app.built.css');
 
-        $outputFileContents = file_get_contents(__DIR__.'/fixtures/var/tailwind/tailwind.built.css');
+        $outputFileContents = file_get_contents(__DIR__.'/fixtures/var/tailwind/app.built.css');
         $this->assertStringContainsString('body{background-color:red}', $outputFileContents, 'The output file should contain minified CSS.');
+    }
+
+    public function testBuildProvidedInputFile(): void
+    {
+        $builder = new TailwindBuilder(
+            __DIR__.'/fixtures',
+            [__DIR__.'/fixtures/assets/styles/app.css', __DIR__.'/fixtures/assets/styles/second.css'],
+            __DIR__.'/fixtures/var/tailwind',
+            new ArrayAdapter(),
+            null,
+            null,
+            __DIR__.'/fixtures/tailwind.config.js'
+        );
+        $process = $builder->runBuild(watch: false, poll: false, minify: true, inputFile: 'assets/styles/second.css');
+        $process->wait();
+
+        $this->assertTrue($process->isSuccessful());
+        $this->assertFileExists(__DIR__.'/fixtures/var/tailwind/second.built.css');
+
+        $outputFileContents = file_get_contents(__DIR__.'/fixtures/var/tailwind/second.built.css');
+        $this->assertStringContainsString('body{background-color:blue}', $outputFileContents, 'The output file should contain minified CSS.');
     }
 }

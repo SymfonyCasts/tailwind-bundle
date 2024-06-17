@@ -11,6 +11,7 @@ namespace Symfonycasts\TailwindBundle\Command;
 
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -32,6 +33,7 @@ class TailwindBuildCommand extends Command
     protected function configure(): void
     {
         $this
+            ->addArgument('input_css', InputArgument::OPTIONAL, 'The input CSS file to compile')
             ->addOption('watch', 'w', null, 'Watch for changes and rebuild automatically')
             ->addOption('poll', null, null, 'Use polling instead of filesystem events when watching')
             ->addOption('minify', 'm', InputOption::VALUE_NONE, 'Minify the output CSS')
@@ -47,6 +49,7 @@ class TailwindBuildCommand extends Command
             watch: $input->getOption('watch'),
             poll: $input->getOption('poll'),
             minify: $input->getOption('minify'),
+            inputFile: $input->getArgument('input_css'),
         );
         $process->wait(function ($type, $buffer) use ($io) {
             $io->write($buffer);

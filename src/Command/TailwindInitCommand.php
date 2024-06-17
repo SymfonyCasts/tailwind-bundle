@@ -92,7 +92,7 @@ class TailwindInitCommand extends Command
 
     private function addTailwindDirectives(SymfonyStyle $io): void
     {
-        $inputFile = $this->tailwindBuilder->getInputCssPath();
+        $inputFile = $this->tailwindBuilder->getInputCssPaths()[0];
         $contents = is_file($inputFile) ? file_get_contents($inputFile) : '';
         if (str_contains($contents, '@tailwind base')) {
             $io->note(sprintf('Tailwind directives already exist in "%s"', $inputFile));

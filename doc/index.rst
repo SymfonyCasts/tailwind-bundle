@@ -94,9 +94,11 @@ download the correct Tailwind binary for your system into a ``var/tailwind/``
 directory.
 
 When you run ``tailwind:build``, that binary is used to compile
-your CSS file into a ``var/tailwind/tailwind.built.css`` file. Finally,
-when the contents of ``assets/styles/app.css`` is requested, the bundle
-swaps the contents of that file with the contents of ``var/tailwind/tailwind.built.css``.
+each CSS file into a ``var/tailwind/<filename>.built.css`` file.
+Finally, when the contents of the CSS file is requested, the bundle swaps the
+contents of that file with the contents of ``var/tailwind/<filename>.built.css``.
+
+E.g. : A request for ``assets/styles/app.css`` will be replaced by ``var/tailwind/app.built.css``.
 Nice!
 
 Deploying
@@ -152,7 +154,7 @@ To see the full config from this bundle, run:
     $ php bin/console config:dump symfonycasts_tailwind
 
 The main option is ``input_css`` option, which defaults to ``assets/styles/app.css``.
-This represents the "source" Tailwind file (the one that contains the ``@tailwind``
+This represents the "source" Tailwind files (the one that contains the ``@tailwind``
 directives):
 
 .. code-block:: yaml
@@ -160,6 +162,15 @@ directives):
     # config/packages/symfonycasts_tailwind.yaml
     symfonycasts_tailwind:
         input_css: 'assets/styles/other.css'
+
+It's possible to use multiple input files by providing an array:
+.. code-block:: yaml
+
+        # config/packages/symfonycasts_tailwind.yaml
+        symfonycasts_tailwind:
+            input_css:
+                - 'assets/styles/other.css'
+                - 'assets/styles/another.css'
 
 Another option is the ``config_file`` option, which defaults to ``tailwind.config.js``.
 This represents the Tailwind configuration file:

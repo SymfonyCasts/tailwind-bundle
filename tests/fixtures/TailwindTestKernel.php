@@ -51,7 +51,7 @@ class TailwindTestKernel extends Kernel
         ]);
 
         $container->loadFromExtension('symfonycasts_tailwind', [
-            'input_css' => __DIR__.'/assets/styles/app.css',
+            'input_css' => [__DIR__.'/assets/styles/app.css'],
         ]);
     }
 

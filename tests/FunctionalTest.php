@@ -24,7 +24,7 @@ class FunctionalTest extends KernelTestCase
             $fs->remove($tailwindVarDir);
         }
         $fs->mkdir($tailwindVarDir);
-        file_put_contents($tailwindVarDir.'/tailwind.built.css', <<<EOF
+        file_put_contents($tailwindVarDir.'/app.built.css', <<<EOF
         body {
             padding: 17px;
             background-image: url('../images/penguin.png');
@@ -35,8 +35,8 @@ class FunctionalTest extends KernelTestCase
 
     protected function tearDown(): void
     {
-        if (is_file(__DIR__.'/fixtures/var/tailwind/tailwind.built.css')) {
-            unlink(__DIR__.'/fixtures/var/tailwind/tailwind.built.css');
+        if (is_file(__DIR__.'/fixtures/var/tailwind/app.built.css')) {
+            unlink(__DIR__.'/fixtures/var/tailwind/app.built.css');
         }
     }
 

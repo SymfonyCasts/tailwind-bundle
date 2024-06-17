@@ -24,35 +24,39 @@ use Symfony\Contracts\Cache\CacheInterface;
 class TailwindBuilder
 {
     private ?SymfonyStyle $output = null;
-    private readonly string $inputPath;
+    private readonly array $inputPaths;
 
     public function __construct(
         private readonly string $projectRootDir,
-        string $inputPath,
+        array $inputPaths,
         private readonly string $tailwindVarDir,
         private CacheInterface $cache,
         private readonly ?string $binaryPath = null,
         private readonly ?string $binaryVersion = null,
         private readonly string $configPath = 'tailwind.config.js'
     ) {
-        if (is_file($inputPath)) {
-            $this->inputPath = $inputPath;
-        } else {
-            $this->inputPath = $projectRootDir.'/'.$inputPath;
-
-            if (!is_file($this->inputPath)) {
-                throw new \InvalidArgumentException(sprintf('The input CSS file "%s" does not exist.', $inputPath));
-            }
+        $paths = [];
+        foreach ($inputPaths as $inputPath) {
+            $paths[] = $this->validateInputFile($inputPath);
         }
+
+        $this->inputPaths = $paths;
     }
 
     public function runBuild(
         bool $watch,
         bool $poll,
         bool $minify,
+        ?string $inputFile = null,
     ): Process {
         $binary = $this->createBinary();
-        $arguments = ['-c', $this->configPath, '-i', $this->inputPath, '-o', $this->getInternalOutputCssPath()];
+
+        $inputPath = $this->validateInputFile($inputFile ?? $this->inputPaths[0]);
+        if (!\in_array($inputPath, $this->inputPaths)) {
+            throw new \InvalidArgumentException(sprintf('The input CSS file "%s" is not one of the configured input files.', $inputPath));
+        }
+
+        $arguments = ['-c', $this->configPath, '-i', $inputPath, '-o', $this->getInternalOutputCssPath($inputPath)];
         if ($watch) {
             $arguments[] = '--watch';
             if ($poll) {
@@ -82,7 +86,7 @@ class TailwindBuilder
         return $process;
     }
 
-    public function runInit()
+    public function runInit(): Process
     {
         $binary = $this->createBinary();
         $process = $binary->createProcess(['init']);
@@ -102,14 +106,16 @@ class TailwindBuilder
         $this->output = $output;
     }
 
-    public function getInternalOutputCssPath(): string
+    public function getInternalOutputCssPath(string $inputPath): string
     {
-        return $this->tailwindVarDir.'/tailwind.built.css';
+        $inputFileName = pathinfo($inputPath, \PATHINFO_FILENAME);
+
+        return "{$this->tailwindVarDir}/{$inputFileName}.built.css";
     }
 
-    public function getInputCssPath(): string
+    public function getInputCssPaths(): array
     {
-        return $this->inputPath;
+        return $this->inputPaths;
     }
 
     public function getConfigFilePath(): string
@@ -117,13 +123,26 @@ class TailwindBuilder
         return $this->configPath;
     }
 
-    public function getOutputCssContent(): string
+    public function getOutputCssContent(string $inputFile): string
     {
-        if (!is_file($this->getInternalOutputCssPath())) {
+        if (!is_file($this->getInternalOutputCssPath($inputFile))) {
             throw new \RuntimeException('Built Tailwind CSS file does not exist: run "php bin/console tailwind:build" to generate it');
         }
 
-        return file_get_contents($this->getInternalOutputCssPath());
+        return file_get_contents($this->getInternalOutputCssPath($inputFile));
+    }
+
+    private function validateInputFile(string $inputPath): string
+    {
+        if (is_file($inputPath)) {
+            return realpath($inputPath);
+        }
+
+        if (is_file($this->projectRootDir.'/'.$inputPath)) {
+            return realpath($this->projectRootDir.'/'.$inputPath);
+        }
+
+        throw new \InvalidArgumentException(sprintf('The input CSS file "%s" does not exist.', $inputPath));
     }
 
     private function createBinary(): TailwindBinary
