@@ -53,9 +53,11 @@ class TailwindExtension extends Extension implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('input_css')
-                    ->info('Path to CSS file to process through Tailwind')
-                    ->defaultValue('%kernel.project_dir%/assets/styles/app.css')
+                ->arrayNode('input_css')
+                    ->prototype('scalar')->end()
+                    ->beforeNormalization()->castToArray()->end()
+                    ->info('Paths to CSS files to process through Tailwind')
+                    ->defaultValue(['%kernel.project_dir%/assets/styles/app.css'])
                 ->end()
                 ->scalarNode('config_file')
                     ->info('Path to the tailwind.config.js file')

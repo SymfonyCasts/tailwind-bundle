@@ -25,13 +25,16 @@ class TailwindCssAssetCompiler implements AssetCompilerInterface
 
     public function supports(MappedAsset $asset): bool
     {
-        return realpath($asset->sourcePath) === realpath($this->tailwindBuilder->getInputCssPath());
+        return \in_array(
+            realpath($asset->sourcePath),
+            $this->tailwindBuilder->getInputCssPaths(),
+        );
     }
 
     public function compile(string $content, MappedAsset $asset, AssetMapperInterface $assetMapper): string
     {
-        $asset->addFileDependency($this->tailwindBuilder->getInternalOutputCssPath());
+        $asset->addFileDependency($this->tailwindBuilder->getInternalOutputCssPath($asset->sourcePath));
 
-        return $this->tailwindBuilder->getOutputCssContent();
+        return $this->tailwindBuilder->getOutputCssContent($asset->sourcePath);
     }
 }
