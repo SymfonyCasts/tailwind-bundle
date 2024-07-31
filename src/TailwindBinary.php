@@ -57,9 +57,9 @@ class TailwindBinary
 
     private function downloadExecutable(): void
     {
-        $url = sprintf('https://github.com/tailwindlabs/tailwindcss/releases/download/%s/%s', $this->getVersion(), self::getBinaryName());
+        $url = \sprintf('https://github.com/tailwindlabs/tailwindcss/releases/download/%s/%s', $this->getVersion(), self::getBinaryName());
 
-        $this->output?->note(sprintf('Downloading TailwindCSS binary from %s', $url));
+        $this->output?->note(\sprintf('Downloading TailwindCSS binary from %s', $url));
 
         if (!is_dir($this->binaryDownloadDir.'/'.$this->getVersion())) {
             mkdir($this->binaryDownloadDir.'/'.$this->getVersion(), 0777, true);
@@ -128,7 +128,7 @@ class TailwindBinary
                 return 'tailwindcss-macos-x64';
             }
 
-            throw new \Exception(sprintf('No matching machine found for Darwin platform (Machine: %s).', $machine));
+            throw new \Exception(\sprintf('No matching machine found for Darwin platform (Machine: %s).', $machine));
         }
 
         if (str_contains($os, 'linux')) {
@@ -142,7 +142,7 @@ class TailwindBinary
                 return 'tailwindcss-linux-x64';
             }
 
-            throw new \Exception(sprintf('No matching machine found for Linux platform (Machine: %s).', $machine));
+            throw new \Exception(\sprintf('No matching machine found for Linux platform (Machine: %s).', $machine));
         }
 
         if (str_contains($os, 'win')) {
@@ -153,9 +153,9 @@ class TailwindBinary
                 return 'tailwindcss-windows-x64.exe';
             }
 
-            throw new \Exception(sprintf('No matching machine found for Windows platform (Machine: %s).', $machine));
+            throw new \Exception(\sprintf('No matching machine found for Windows platform (Machine: %s).', $machine));
         }
 
-        throw new \Exception(sprintf('Unknown platform or architecture (OS: %s, Machine: %s).', $os, $machine));
+        throw new \Exception(\sprintf('Unknown platform or architecture (OS: %s, Machine: %s).', $os, $machine));
     }
 }

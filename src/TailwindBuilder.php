@@ -53,7 +53,7 @@ class TailwindBuilder
 
         $inputPath = $this->validateInputFile($inputFile ?? $this->inputPaths[0]);
         if (!\in_array($inputPath, $this->inputPaths)) {
-            throw new \InvalidArgumentException(sprintf('The input CSS file "%s" is not one of the configured input files.', $inputPath));
+            throw new \InvalidArgumentException(\sprintf('The input CSS file "%s" is not one of the configured input files.', $inputPath));
         }
 
         $arguments = ['-c', $this->configPath, '-i', $inputPath, '-o', $this->getInternalOutputCssPath($inputPath)];
@@ -142,7 +142,7 @@ class TailwindBuilder
             return realpath($this->projectRootDir.'/'.$inputPath);
         }
 
-        throw new \InvalidArgumentException(sprintf('The input CSS file "%s" does not exist.', $inputPath));
+        throw new \InvalidArgumentException(\sprintf('The input CSS file "%s" does not exist.', $inputPath));
     }
 
     private function createBinary(): TailwindBinary

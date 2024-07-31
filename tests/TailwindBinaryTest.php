@@ -40,7 +40,7 @@ class TailwindBinaryTest extends TestCase
         $expectedTemplate = '\\' === \DIRECTORY_SEPARATOR ? '"%s" -i fake.css' : "'%s' '-i' 'fake.css'";
 
         $this->assertSame(
-            sprintf($expectedTemplate, $binaryDownloadDir.'/fake-version/'.TailwindBinary::getBinaryName()),
+            \sprintf($expectedTemplate, $binaryDownloadDir.'/fake-version/'.TailwindBinary::getBinaryName()),
             $process->getCommandLine()
         );
     }
