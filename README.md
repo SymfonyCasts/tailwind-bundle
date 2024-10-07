@@ -1,5 +1,7 @@
 # Tailwind CSS for Symfony!
 
+[![CI](https://github.com/SymfonyCasts/tailwind-bundle/actions/workflows/ci.yaml/badge.svg)](https://github.com/SymfonyCasts/tailwind-bundle/actions/workflows/ci.yaml)
+
 This bundle makes it easy to use [Tailwind CSS](https://tailwindcss.com/) with
 Symfony's [AssetMapper Component](https://symfony.com/doc/current/frontend/asset_mapper.html)
 (no Node required!).
@@ -10,7 +12,7 @@ Read the documentation at: https://symfony.com/bundles/TailwindBundle/current/in
 
 ## Support us & Symfony
 
-Is this package useful! We're *thrilled* 😍!
+Is this package useful? We're *thrilled* 😍!
 
 A lot of time & effort from the Symfonycasts team & the Symfony community
 goes into creating and maintaining these packages. You can support us +
