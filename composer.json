@@ -23,6 +23,9 @@
         "symfony/framework-bundle": "^6.3|^7.0",
         "symfony/phpunit-bridge": "^6.3|^7.0"
     },
+    "conflict": {
+        "phpunit/phpunit": ">=10"
+    },
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
