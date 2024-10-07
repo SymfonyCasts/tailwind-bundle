@@ -33,7 +33,7 @@ class TailwindBuilder
         private CacheInterface $cache,
         private readonly ?string $binaryPath = null,
         private readonly ?string $binaryVersion = null,
-        private readonly string $configPath = 'tailwind.config.js'
+        private readonly string $configPath = 'tailwind.config.js',
     ) {
         $paths = [];
         foreach ($inputPaths as $inputPath) {
