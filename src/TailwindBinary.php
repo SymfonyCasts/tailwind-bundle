@@ -33,7 +33,7 @@ class TailwindBinary
         private ?string $binaryVersion,
         private CacheInterface $cache,
         private ?SymfonyStyle $output = null,
-        ?HttpClientInterface $httpClient = null
+        ?HttpClientInterface $httpClient = null,
     ) {
         $this->httpClient = $httpClient ?? HttpClient::create();
     }
