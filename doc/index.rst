@@ -182,7 +182,7 @@ This represents the Tailwind configuration file:
         config_file: 'tailwind.config.js'
 
 If you include any other files containing classes to be detected outside the 
-default directories, like the `form themes provided with the Twig Bridge component <https://github.com/symfony/symfony/blob/HEAD/src/Symfony/Bridge/Twig/Resources/views/Form/tailwind_2_layout.html.twig/>`_, 
+default directories, like the ``symfony/twig-bridge``'s `Tailwind CSS form theme <https://symfony.com/doc/current/form/tailwindcss.html>`_
 untouched from the ``vendor`` directory, for instance, after changing your Twig configuration like this:
 
 .. code-block:: yaml
