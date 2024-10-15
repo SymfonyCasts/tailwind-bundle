@@ -3,7 +3,7 @@ Tailwind CSS for Symfony!
 
 This bundle makes it easy to use `Tailwind CSS <https://tailwindcss.com/>`_ with
 Symfony's `AssetMapper Component <https://symfony.com/doc/current/frontend/asset_mapper.html>`_
-(no Node required!).
+(no Node.js required!).
 
 - Automatically downloads the correct `standalone Tailwind CSS binary <https://tailwindcss.com/blog/standalone-cli>`_;
 - Adds a ``tailwind:build`` command to build & watch for changes;
@@ -42,8 +42,8 @@ you already have this:
         <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
     {% endblock %}
 
-The bundle works by swapping out the contents of ``styles/app.css`` with the
-compiled CSS automatically. For this to work, you need to run the ``tailwind:build``
+The bundle works by automatically swapping out the contents of ``styles/app.css``
+with the compiled CSS. For this to work, you need to run the ``tailwind:build``
 command:
 
 .. code-block:: terminal
@@ -58,7 +58,7 @@ Watch mode in Docker with Windows host
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you work on Windows and your app is running in a Docker container, and you
-are having trouble with the ``--watch`` option, you can try runnig the ``tailwind:build``
+are having trouble with the ``--watch`` option, you can try running the ``tailwind:build``
 command with ``--poll`` option.
 
 .. code-block:: terminal
@@ -98,7 +98,7 @@ each CSS file into a ``var/tailwind/<filename>.built.css`` file.
 Finally, when the contents of the CSS file is requested, the bundle swaps the
 contents of that file with the contents of ``var/tailwind/<filename>.built.css``.
 
-E.g. : A request for ``assets/styles/app.css`` will be replaced by ``var/tailwind/app.built.css``.
+E.g.: A request for ``assets/styles/app.css`` will be replaced by ``var/tailwind/app.built.css``.
 Nice!
 
 Deploying
@@ -122,7 +122,7 @@ provides that!
 Tailwind Plugins
 ----------------
 
-The Tailwind binary the bundle downloads already contains the "Official Plugins" - e.g. `typography <https://tailwindcss.com/docs/typography-plugin>`_.
+The Tailwind binary that the bundle downloads already contains the "Official Plugins" - e.g. `typography <https://tailwindcss.com/docs/typography-plugin>`_.
 This means you can use those simply by adding the line to the ``plugins`` key in
 ``tailwind.config.js`` - e.g. ``require('@tailwindcss/typography')``.
 
@@ -181,9 +181,10 @@ This represents the Tailwind configuration file:
     symfonycasts_tailwind:
         config_file: 'tailwind.config.js'
 
-If you include any other files containing classes to be detected outside the 
-default directories, like the ``symfony/twig-bridge``'s `Tailwind CSS form theme <https://symfony.com/doc/current/form/tailwindcss.html>`_
-untouched from the ``vendor`` directory, for instance, after changing your Twig configuration like this:
+If you include any other files containing CSS classes that are located outside of
+the default directories, for example, in the ``vendor/`` directory like the
+`Tailwind CSS form theme <https://symfony.com/doc/current/form/tailwindcss.html>`_
+ from the ``symfony/twig-bridge`` package, then after changing your Twig configuration:
 
 .. code-block:: yaml
 
@@ -192,7 +193,7 @@ untouched from the ``vendor`` directory, for instance, after changing your Twig 
         form_themes:
             - 'tailwind_2_layout.html.twig'
 
-You can add them to your ``tailwind.config.js`` file like this:
+You will have to add them to your ``tailwind.config.js`` file:
 
 .. code-block:: diff
 
@@ -209,7 +210,7 @@ You can add them to your ``tailwind.config.js`` file like this:
 Using a Different Binary
 ------------------------
 
-The standalone Tailwind binary comes with the first-party plugins. However,
+The standalone Tailwind binary comes with first-party plugins. However,
 if you want to add extra plugins, you may choose to install Tailwind via
 npm instead:
 
@@ -228,7 +229,7 @@ To instruct the bundle to use that binary instead, set the ``binary`` option:
 Using a Different Binary Version
 ------------------------
 
-By default the latest standalone Tailwind binary gets downloaded. However,
+By default, the latest standalone Tailwind binary gets downloaded. However,
 if you want to use a different version, you can specify the version to use,
 set ``binary_version`` option:
 
