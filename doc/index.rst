@@ -192,7 +192,7 @@ untouched from the ``vendor`` directory, for instance, after changing your Twig 
         form_themes:
             - 'tailwind_2_layout.html.twig'
 
-...you can add them to your ``tailwind.config.js`` file, like this:
+You can add them to your ``tailwind.config.js`` file like this:
 
 .. code-block:: diff
 
