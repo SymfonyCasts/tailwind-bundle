@@ -181,6 +181,31 @@ This represents the Tailwind configuration file:
     symfonycasts_tailwind:
         config_file: 'tailwind.config.js'
 
+If you include any other files containing classes to be detected outside the 
+default directories, like the ``symfony/twig-bridge``'s `Tailwind CSS form theme <https://symfony.com/doc/current/form/tailwindcss.html>`_
+untouched from the ``vendor`` directory, for instance, after changing your Twig configuration like this:
+
+.. code-block:: yaml
+
+    # config/packages/twig.yaml
+    twig:    
+        form_themes:
+            - 'tailwind_2_layout.html.twig'
+
+You can add them to your ``tailwind.config.js`` file like this:
+
+.. code-block:: diff
+
+      # tailwind.config.js
+      module.exports = {
+          content: [
+              "./assets/**/*.js",
+              "./templates/**/*.html.twig",
+    +         "./vendor/symfony/twig-bridge/Resources/views/Form/*.html.twig",
+          ],
+      }
+
+
 Using a Different Binary
 ------------------------
 
