@@ -14,7 +14,7 @@ Read the documentation at: https://symfony.com/bundles/TailwindBundle/current/in
 
 Is this package useful? We're *thrilled* 😍!
 
-A lot of time & effort from the Symfonycasts team & the Symfony community
+A lot of time and effort from the Symfonycasts team & the Symfony community
 goes into creating and maintaining these packages. You can support us +
 Symfony (and learn a bucket-load) by grabbing a subscription to [SymfonyCasts](https://symfonycasts.com)!
 
@@ -25,4 +25,4 @@ Symfony (and learn a bucket-load) by grabbing a subscription to [SymfonyCasts](h
 
 ## License
 
-MIT License (MIT): see the [License File](LICENSE.md) for more details.
+MIT License (MIT): see the [License File](LICENSE) for more details.
