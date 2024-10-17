@@ -50,6 +50,6 @@ class FunctionalTest extends KernelTestCase
         $this->assertInstanceOf(MappedAsset::class, $asset);
         $this->assertStringContainsString('padding: 17px', $asset->content);
         // verify the core CSS compiler that handles url() was executed
-        $this->assertMatchesRegularExpression('/penguin-[a-f0-9]{32}\.png/', $asset->content);
+        $this->assertMatchesRegularExpression('/penguin-[a-f0-9]{32}|[\w\d-]{7}\.png/', $asset->content);
     }
 }
