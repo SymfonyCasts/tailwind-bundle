@@ -38,9 +38,12 @@ you already have this:
 
     {# templates/base.html.twig #}
 
-    {% block stylesheets %}
-        <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
-    {% endblock %}
+    <head>
+    ...
+    <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+    {% block stylesheets %}{% endblock %}
+    ...
+    </head>
 
 The bundle works by automatically swapping out the contents of ``styles/app.css``
 with the compiled CSS. For this to work, you need to run the ``tailwind:build``
