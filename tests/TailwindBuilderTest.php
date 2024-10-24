@@ -11,6 +11,7 @@ namespace Symfonycasts\TailwindBundle\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfonycasts\TailwindBundle\TailwindBuilder;
@@ -21,7 +22,13 @@ class TailwindBuilderTest extends TestCase
     {
         $fs = new Filesystem();
         if (file_exists(__DIR__.'/fixtures/var/tailwind')) {
-            $fs->remove(__DIR__.'/fixtures/var/tailwind');
+            try {
+                $fs->remove(__DIR__.'/fixtures/var/tailwind');
+            } catch (IOException $e) {
+                // Sometimes "Permission denied" error happens on Windows,
+                // ignore it but print a warning
+                $this->addWarning('Could not remove the temporary tailwind/ dir: '.$e->getMessage());
+            }
         }
         $fs->mkdir(__DIR__.'/fixtures/var/tailwind');
     }
