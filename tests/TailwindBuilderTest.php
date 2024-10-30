@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Symfonycasts\TailwindBundle\TailwindBuilder;
 
 class TailwindBuilderTest extends TestCase
@@ -25,6 +26,11 @@ class TailwindBuilderTest extends TestCase
 
     protected function tearDown(): void
     {
+        $finder = new Finder();
+        $finder->in(__DIR__.'/fixtures/var/tailwind')->files();
+        foreach ($finder as $file) {
+            unlink($file->getRealPath());
+        }
         $fs = new Filesystem();
         try {
             $fs->remove(__DIR__.'/fixtures/var/tailwind');
