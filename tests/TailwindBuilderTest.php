@@ -32,14 +32,21 @@ class TailwindBuilderTest extends TestCase
         foreach ($finder as $file) {
             $fs->remove($file->getRealPath());
         }
-        try {
-            $fs->remove(__DIR__.'/fixtures/var/tailwind');
-        } catch (IOException $e) {
-            // Sometimes "Permission denied" error happens on Windows,
-            // add a warning about it and try again in a second
-            $this->addWarning('Could not remove the temporary tailwind/ dir (trying again in 1 second): '.$e->getMessage());
-            sleep(1);
-            $fs->remove(__DIR__.'/fixtures/var/tailwind');
+        $i = 0;
+        while (true) {
+            try {
+                $fs->remove(__DIR__.'/fixtures/var/tailwind');
+                break;
+            } catch (IOException $e) {
+                if ($i++ > 5) {
+                    // Sometimes "Permission denied" error happens on Windows,
+                    // add a warning about it
+                    $this->addWarning('Could not remove the temporary tailwind/ dir from the first time: '.$e->getMessage());
+                    break;
+                }
+                // and try again in a second
+                sleep(1);
+            }
         }
     }
 
