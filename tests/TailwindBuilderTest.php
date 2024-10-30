@@ -20,9 +20,6 @@ class TailwindBuilderTest extends TestCase
     protected function setUp(): void
     {
         $fs = new Filesystem();
-        if (file_exists(__DIR__.'/fixtures/var/tailwind')) {
-            $fs->remove(__DIR__.'/fixtures/var/tailwind');
-        }
         $fs->mkdir(__DIR__.'/fixtures/var/tailwind');
     }
 
@@ -32,6 +29,10 @@ class TailwindBuilderTest extends TestCase
         $finder->in(__DIR__.'/fixtures/var/tailwind')->files();
         foreach ($finder as $file) {
             unlink($file->getRealPath());
+        }
+        $fs = new Filesystem();
+        if (file_exists(__DIR__.'/fixtures/var/tailwind')) {
+            $fs->remove(__DIR__.'/fixtures/var/tailwind');
         }
     }
 
