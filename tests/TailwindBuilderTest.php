@@ -27,18 +27,18 @@ class TailwindBuilderTest extends TestCase
     {
         $fs = new Filesystem();
         $i = 0;
+        // Sometimes "Permission denied" error happens on Windows
+        // so try to clean up the dir a few times
         while (true) {
             try {
                 $fs->remove(__DIR__.'/fixtures/var/tailwind');
                 break;
             } catch (IOException $e) {
                 if ($i++ > 5) {
-                    // Sometimes "Permission denied" error happens on Windows,
-                    // add a warning about it
-                    $this->addWarning('Could not remove the temporary tailwind/ dir from the first time: '.$e->getMessage());
-                    break;
+                    // Still not able to delete it? Throw
+                    throw $e;
                 }
-                // and try again in a second
+                // Try again in a second
                 sleep(1);
             }
         }
