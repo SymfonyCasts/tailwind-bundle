@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
+use Symfony\Component\Process\Process;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfonycasts\TailwindBundle\TailwindBinary;
 
@@ -34,13 +35,11 @@ class TailwindBinaryTest extends TestCase
 
         $binary = new TailwindBinary($binaryDownloadDir, __DIR__, null, 'fake-version', $cache, null, $client);
         $process = $binary->createProcess(['-i', 'fake.css']);
-        $this->assertFileExists($binaryDownloadDir.'/fake-version/'.TailwindBinary::getBinaryName());
-
-        // Windows doesn't wrap arguments in quotes
-        $expectedTemplate = '\\' === \DIRECTORY_SEPARATOR ? '"%s" -i fake.css' : "'%s' '-i' 'fake.css'";
+        $binaryFile = $binaryDownloadDir.'/fake-version/'.TailwindBinary::getBinaryName();
+        $this->assertFileExists($binaryFile);
 
         $this->assertSame(
-            \sprintf($expectedTemplate, $binaryDownloadDir.'/fake-version/'.TailwindBinary::getBinaryName()),
+            (new Process([$binaryFile, '-i', 'fake.css'], __DIR__))->getCommandLine(),
             $process->getCommandLine()
         );
     }
