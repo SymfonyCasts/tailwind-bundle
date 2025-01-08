@@ -48,6 +48,7 @@ class TailwindBuilder
         bool $poll,
         bool $minify,
         ?string $inputFile = null,
+        ?string $postCss = null,
     ): Process {
         $binary = $this->createBinary();
 
@@ -65,6 +66,10 @@ class TailwindBuilder
         }
         if ($minify) {
             $arguments[] = '--minify';
+        }
+        if ($postCss) {
+            $arguments[] = '--postcss';
+            $arguments[] = $postCss;
         }
         $process = $binary->createProcess($arguments);
         if ($watch) {

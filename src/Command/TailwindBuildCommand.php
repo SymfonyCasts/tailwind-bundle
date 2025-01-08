@@ -37,6 +37,7 @@ class TailwindBuildCommand extends Command
             ->addOption('watch', 'w', null, 'Watch for changes and rebuild automatically')
             ->addOption('poll', null, null, 'Use polling instead of filesystem events when watching')
             ->addOption('minify', 'm', InputOption::VALUE_NONE, 'Minify the output CSS')
+            ->addOption('postcss', null, InputOption::VALUE_REQUIRED, 'Load custom PostCSS configuration')
         ;
     }
 
@@ -50,6 +51,7 @@ class TailwindBuildCommand extends Command
             poll: $input->getOption('poll'),
             minify: $input->getOption('minify'),
             inputFile: $input->getArgument('input_css'),
+            postCss: $input->getOption('postcss'),
         );
         $process->wait(function ($type, $buffer) use ($io) {
             $io->write($buffer);
