@@ -234,6 +234,7 @@ if you want to use a different version, you can specify the version to use,
 set ``binary_version`` option:
 
 .. code-block:: yaml
+
     # config/packages/symfonycasts_tailwind.yaml
     symfonycasts_tailwind:
         binary_version: 'v3.3.0'
@@ -246,9 +247,11 @@ PostCSS config file to use, set ``postcss_config_file`` option or
 pass the ``--postcss`` option to the ``tailwind:build`` command.
 
 .. code-block:: yaml
+
     # config/packages/symfonycasts_tailwind.yaml
     symfonycasts_tailwind:
         postcss_config_file: 'postcss.config.js'
+
 
 .. code-block:: terminal
 
