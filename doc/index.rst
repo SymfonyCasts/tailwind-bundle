@@ -189,7 +189,7 @@ the default directories, for example, in the ``vendor/`` directory like the
 .. code-block:: yaml
 
     # config/packages/twig.yaml
-    twig:    
+    twig:
         form_themes:
             - 'tailwind_2_layout.html.twig'
 
@@ -237,3 +237,19 @@ set ``binary_version`` option:
     # config/packages/symfonycasts_tailwind.yaml
     symfonycasts_tailwind:
         binary_version: 'v3.3.0'
+
+Using a PostCSS config file
+------------------------
+
+If you want to use additional PostCSS plugins, you can specify the
+PostCSS config file to use, set ``postcss_config_file`` option or
+pass the ``--postcss`` option to the ``tailwind:build`` command.
+
+.. code-block:: yaml
+    # config/packages/symfonycasts_tailwind.yaml
+    symfonycasts_tailwind:
+        postcss_config_file: 'postcss.config.js'
+
+.. code-block:: terminal
+
+    $ php bin/console tailwind:build --postcss='postcss.config.js'

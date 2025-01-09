@@ -32,6 +32,7 @@ class TailwindExtension extends Extension implements ConfigurationInterface
             ->replaceArgument(4, $config['binary'])
             ->replaceArgument(5, $config['binary_version'])
             ->replaceArgument(6, $config['config_file'])
+            ->replaceArgument(7, $config['postcss_config_file'])
         ;
     }
 
@@ -69,6 +70,10 @@ class TailwindExtension extends Extension implements ConfigurationInterface
                 ->end()
                 ->scalarNode('binary_version')
                     ->info('Tailwind CLI version to download - null means the latest version')
+                    ->defaultNull()
+                ->end()
+                ->scalarNode('postcss_config_file')
+                    ->info('Path to PostCSS config file which is passed to the Tailwind CLI')
                     ->defaultNull()
                 ->end()
             ->end();

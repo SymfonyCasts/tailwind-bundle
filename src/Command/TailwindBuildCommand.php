@@ -51,7 +51,7 @@ class TailwindBuildCommand extends Command
             poll: $input->getOption('poll'),
             minify: $input->getOption('minify'),
             inputFile: $input->getArgument('input_css'),
-            postCss: $input->getOption('postcss'),
+            postCssConfigFile: $input->getOption('postcss'),
         );
         $process->wait(function ($type, $buffer) use ($io) {
             $io->write($buffer);

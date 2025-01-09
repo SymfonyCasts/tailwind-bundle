@@ -106,4 +106,26 @@ class TailwindBuilderTest extends TestCase
         $outputFileContents = file_get_contents(__DIR__.'/fixtures/var/tailwind/second.built.css');
         $this->assertStringContainsString('body{background-color:blue}', $outputFileContents, 'The output file should contain minified CSS.');
     }
+
+    public function testIntegrationWithPostcss(): void
+    {
+        $builder = new TailwindBuilder(
+            __DIR__.'/fixtures',
+            [__DIR__.'/fixtures/assets/styles/app.css'],
+            __DIR__.'/fixtures/var/tailwind',
+            new ArrayAdapter(),
+            null,
+            null,
+            __DIR__.'/fixtures/tailwind.config.js',
+            __DIR__.'/fixtures/postcss.config.js',
+        );
+        $process = $builder->runBuild(watch: false, poll: false, minify: false);
+        $process->wait();
+
+        $this->assertTrue($process->isSuccessful());
+        $this->assertFileExists(__DIR__.'/fixtures/var/tailwind/app.built.css');
+
+        $outputFileContents = file_get_contents(__DIR__.'/fixtures/var/tailwind/app.built.css');
+        $this->assertStringContainsString('.dummy {}', $outputFileContents, 'The output file should contain the dummy CSS added by the dummy plugin.');
+    }
 }
