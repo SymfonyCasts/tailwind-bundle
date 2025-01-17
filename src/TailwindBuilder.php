@@ -34,7 +34,7 @@ class TailwindBuilder
         private readonly ?string $binaryPath = null,
         private readonly ?string $binaryVersion = null,
         private readonly string $configPath = 'tailwind.config.js',
-        private readonly ?string $postCssconfigPath = null,
+        private readonly ?string $postCssConfigPath = null,
     ) {
         $paths = [];
         foreach ($inputPaths as $inputPath) {
@@ -69,7 +69,7 @@ class TailwindBuilder
             $arguments[] = '--minify';
         }
 
-        $postCssConfigPath = $this->validatePostCssConfigFile($postCssConfigFile ?? $this->postCssconfigPath);
+        $postCssConfigPath = $this->validatePostCssConfigFile($postCssConfigFile ?? $this->postCssConfigPath);
         if ($postCssConfigPath) {
             $arguments[] = '--postcss';
             $arguments[] = $postCssConfigPath;
