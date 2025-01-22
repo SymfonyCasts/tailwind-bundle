@@ -34,6 +34,7 @@ class TailwindBuilder
         private readonly ?string $binaryPath = null,
         private readonly ?string $binaryVersion = null,
         private readonly string $configPath = 'tailwind.config.js',
+        private readonly ?string $postCssConfigPath = null,
     ) {
         $paths = [];
         foreach ($inputPaths as $inputPath) {
@@ -48,6 +49,7 @@ class TailwindBuilder
         bool $poll,
         bool $minify,
         ?string $inputFile = null,
+        ?string $postCssConfigFile = null,
     ): Process {
         $binary = $this->createBinary();
 
@@ -65,6 +67,12 @@ class TailwindBuilder
         }
         if ($minify) {
             $arguments[] = '--minify';
+        }
+
+        $postCssConfigPath = $this->validatePostCssConfigFile($postCssConfigFile ?? $this->postCssConfigPath);
+        if ($postCssConfigPath) {
+            $arguments[] = '--postcss';
+            $arguments[] = $postCssConfigPath;
         }
         $process = $binary->createProcess($arguments);
         if ($watch) {
@@ -143,6 +151,23 @@ class TailwindBuilder
         }
 
         throw new \InvalidArgumentException(\sprintf('The input CSS file "%s" does not exist.', $inputPath));
+    }
+
+    private function validatePostCssConfigFile(?string $postCssConfigPath): ?string
+    {
+        if (null === $postCssConfigPath) {
+            return null;
+        }
+
+        if (is_file($postCssConfigPath)) {
+            return realpath($postCssConfigPath);
+        }
+
+        if (is_file($this->projectRootDir.'/'.$postCssConfigPath)) {
+            return realpath($this->projectRootDir.'/'.$postCssConfigPath);
+        }
+
+        throw new \InvalidArgumentException(\sprintf('The PostCSS config file "%s" does not exist.', $postCssConfigPath));
     }
 
     private function createBinary(): TailwindBinary
