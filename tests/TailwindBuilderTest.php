@@ -94,7 +94,7 @@ class TailwindBuilderTest extends TestCase
             __DIR__.'/fixtures/var/tailwind',
             new ArrayAdapter(),
             null,
-            null,
+            'v3.4.17',
             __DIR__.'/fixtures/tailwind.config.js'
         );
         $process = $builder->runBuild(watch: false, poll: false, minify: true, inputFile: 'assets/styles/second.css');
@@ -115,7 +115,7 @@ class TailwindBuilderTest extends TestCase
             __DIR__.'/fixtures/var/tailwind',
             new ArrayAdapter(),
             null,
-            null,
+            'v3.4.17',
             __DIR__.'/fixtures/tailwind.config.js',
             __DIR__.'/fixtures/postcss.config.js',
         );

@@ -1,6 +1,10 @@
 Tailwind CSS for Symfony!
 =========================
 
+.. caution::
+
+    This bundle does not yet support Tailwind CSS 4.0.
+
 This bundle makes it easy to use `Tailwind CSS <https://tailwindcss.com/>`_ with
 Symfony's `AssetMapper Component <https://symfony.com/doc/current/frontend/asset_mapper.html>`_
 (no Node.js required!).
