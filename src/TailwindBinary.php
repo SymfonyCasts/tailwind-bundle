@@ -93,7 +93,7 @@ class TailwindBinary
         chmod($targetPath, 0777);
     }
 
-    private function getVersion(): string
+    public function getVersion(): string
     {
         return $this->cachedVersion ??= $this->binaryVersion ?? $this->getLatestVersion();
     }

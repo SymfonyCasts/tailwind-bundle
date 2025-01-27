@@ -140,6 +140,10 @@ class TailwindBuilder
         return file_get_contents($this->getInternalOutputCssPath($inputFile));
     }
 
+    public function getBinaryVersion(): string {
+        return $this->createBinary()->getVersion();
+    }
+
     private function validateInputFile(string $inputPath): string
     {
         if (is_file($inputPath)) {
