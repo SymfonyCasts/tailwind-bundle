@@ -32,7 +32,7 @@ class TailwindBuilderTest extends TestCase
         // so try to clean up the dir a few times
         while (true) {
             try {
-//                $fs->remove(__DIR__.'/fixtures/var/tailwind');
+                $fs->remove(__DIR__.'/fixtures/var/tailwind');
                 break;
             } catch (IOException $e) {
                 if ($i++ > 5) {
