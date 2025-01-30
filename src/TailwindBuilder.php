@@ -140,6 +140,14 @@ class TailwindBuilder
         return file_get_contents($this->getInternalOutputCssPath($inputFile));
     }
 
+    public function isBinaryVersionEqualOrGreaterThan4(): bool
+    {
+        $binaryVersion = $this->createBinary()->getVersion();
+
+        return str_starts_with($binaryVersion, 'v')
+            && version_compare(substr($binaryVersion, 1), '4') >= 0;
+    }
+
     private function validateInputFile(string $inputPath): string
     {
         if (is_file($inputPath)) {
