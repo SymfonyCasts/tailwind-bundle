@@ -233,15 +233,24 @@ To instruct the bundle to use that binary instead, set the ``binary`` option:
 Using a Different Binary Version
 ------------------------
 
-By default, the latest standalone Tailwind binary gets downloaded. However,
-if you want to use a different version, you can specify the version to use,
-set ``binary_version`` option:
+By default, when you run ``php bin/console tailwind:build``, the bundle will check
+to see if it's already downloaded a version of tailwind. If it hasn't, the
+latest standalone Tailwind binary will be downloaded. If it has, the latest
+version it can find in your ``./var/tailwind`` directory will be used. In order to
+update to a new version, delete your ``./var/tailwind`` directory before running
+``tailwind:build``.
+
+If instead you want to use only a specific version of tailwind, you can set the
+``binary_version`` option:
 
 .. code-block:: yaml
 
     # config/packages/symfonycasts_tailwind.yaml
     symfonycasts_tailwind:
         binary_version: 'v3.3.0'
+
+This will ignore any other versions you have installed, and only use the
+specified version.
 
 Using a PostCSS config file
 ------------------------
