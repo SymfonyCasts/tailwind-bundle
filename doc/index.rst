@@ -247,6 +247,11 @@ set ``binary_version`` option:
 Using a PostCSS config file
 ------------------------
 
+.. warning::
+
+    Tailwind CSS standalone binary v4.0.0 or higher doesn't support PostCSS anymore.
+    If you want to use PostCSS, please specify a previous binary version.
+
 If you want to use additional PostCSS plugins, you can specify the
 PostCSS config file to use, set ``postcss_config_file`` option or
 pass the ``--postcss`` option to the ``tailwind:build`` command.
