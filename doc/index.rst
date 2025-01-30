@@ -1,6 +1,11 @@
 Tailwind CSS for Symfony!
 =========================
 
+.. caution::
+
+    This bundle support Tailwind CSS 4.0 but PostCSS is not supported by the standalone binary.
+    Please specify a lower Tailwind binary version if you want to use PostCSS.
+
 This bundle makes it easy to use `Tailwind CSS <https://tailwindcss.com/>`_ with
 Symfony's `AssetMapper Component <https://symfony.com/doc/current/frontend/asset_mapper.html>`_
 (no Node.js required!).

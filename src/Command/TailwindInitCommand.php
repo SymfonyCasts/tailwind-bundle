@@ -94,13 +94,11 @@ class TailwindInitCommand extends Command
     {
         $inputFile = $this->tailwindBuilder->getInputCssPaths()[0];
         $contents = is_file($inputFile) ? file_get_contents($inputFile) : '';
-        $binaryVersion = $this->tailwindBuilder->getBinaryVersion();
-        $versionGreaterThan4 = strpos($binaryVersion, 'v') === 0 &&
-            version_compare(substr($binaryVersion, 1), '4') >= 0;
-        $tailwindGreaterThan4Directive = '@import "tailwindcss";';
+        $versionEqualsOrGreaterThan4 = $this->tailwindBuilder->isBinaryVersionEqualOrGreaterThan4();
+        $tailwindEqualsOrGreaterThan4Directive = '@import "tailwindcss";';
 
-        if ($versionGreaterThan4) {
-            if(str_contains($contents, $tailwindGreaterThan4Directive)) {
+        if ($versionEqualsOrGreaterThan4) {
+            if(str_contains($contents, $tailwindEqualsOrGreaterThan4Directive)) {
                 $io->note(sprintf('New Tailwind 4 or higher directive already exist in "%s"', $inputFile));
 
                 return;
@@ -111,18 +109,16 @@ class TailwindInitCommand extends Command
                 $contents = str_replace($oldDirectives, '', $contents);
             }
             $io->note(sprintf('Adding Tailwind 4 or higher directive to "%s"', $inputFile));
-            file_put_contents($inputFile, $tailwindGreaterThan4Directive.PHP_EOL.PHP_EOL.$contents);
-
-            return;
+            file_put_contents($inputFile, $tailwindEqualsOrGreaterThan4Directive.PHP_EOL.PHP_EOL.$contents);
         } else {
             if (str_contains($contents, '@tailwind base')) {
                 $io->note(\sprintf('Tailwind directives already exist in "%s"', $inputFile));
 
                 return;
             }
-            if (str_contains($contents, $tailwindGreaterThan4Directive)) {
+            if (str_contains($contents, $tailwindEqualsOrGreaterThan4Directive)) {
                 $io->note(sprintf('Removing Tailwind 4 or higher directive from "%s"', $inputFile));
-                $contents = str_replace($tailwindGreaterThan4Directive.PHP_EOL.PHP_EOL, '', $contents);
+                $contents = str_replace($tailwindEqualsOrGreaterThan4Directive.PHP_EOL.PHP_EOL, '', $contents);
             }
             $io->note(\sprintf('Adding Tailwind directives to "%s"', $inputFile));
             $tailwindDirectives = <<<EOF
