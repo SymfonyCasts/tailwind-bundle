@@ -17,7 +17,6 @@ use Symfonycasts\TailwindBundle\TailwindBuilder;
 
 class TailwindBuilderTest extends TestCase
 {
-
     protected function setUp(): void
     {
         $fs = new Filesystem();
@@ -53,6 +52,7 @@ class TailwindBuilderTest extends TestCase
             '',
             new ArrayAdapter(),
         );
+
         return $versionBuilder->isBinaryVersionEqualOrGreaterThan4();
     }
 

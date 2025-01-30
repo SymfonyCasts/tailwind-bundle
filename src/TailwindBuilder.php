@@ -143,8 +143,9 @@ class TailwindBuilder
     public function isBinaryVersionEqualOrGreaterThan4(): bool
     {
         $binaryVersion = $this->createBinary()->getVersion();
-        return str_starts_with($binaryVersion, 'v') &&
-            version_compare(substr($binaryVersion, 1), '4') >= 0;
+
+        return str_starts_with($binaryVersion, 'v')
+            && version_compare(substr($binaryVersion, 1), '4') >= 0;
     }
 
     private function validateInputFile(string $inputPath): string
