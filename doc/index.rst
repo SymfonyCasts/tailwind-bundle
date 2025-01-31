@@ -240,7 +240,7 @@ version it can find in your ``./var/tailwind`` directory will be used. In order 
 update to a new version, delete your ``./var/tailwind`` directory before running
 ``tailwind:build``.
 
-If instead you want to use only a specific version of tailwind, you can set the
+If instead, you want to use only a specific version of Tailwind, you can set the
 ``binary_version`` option:
 
 .. code-block:: yaml
