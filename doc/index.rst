@@ -234,7 +234,7 @@ Using a Different Binary Version
 ------------------------
 
 By default, when you run ``php bin/console tailwind:build``, the bundle will check
-to see if it's already downloaded a version of tailwind. If it hasn't, the
+to see if it's already downloaded a version of Tailwind binary. If it hasn't, the
 latest standalone Tailwind binary will be downloaded. If it has, the latest
 version it can find in your ``./var/tailwind`` directory will be used. In order to
 update to a new version, delete your ``./var/tailwind`` directory before running
