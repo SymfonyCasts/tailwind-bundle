@@ -95,7 +95,23 @@ class TailwindBinary
 
     private function getVersion(): string
     {
-        return $this->cachedVersion ??= $this->binaryVersion ?? $this->getLatestVersion();
+        return $this->cachedVersion ??= $this->binaryVersion
+            ?? $this->getLatestInstalledVersion()
+            ?? $this->getLatestVersion();
+    }
+
+    private function getLatestInstalledVersion(): ?string
+    {
+        $binaryName = self::getBinaryName();
+
+        $installedBinaries = glob("{$this->binaryDownloadDir}/v*/{$binaryName}");
+
+        $installedVersions = array_map(function (string $path) {
+            return basename(\dirname($path));
+        }, $installedBinaries);
+        usort($installedVersions, 'version_compare');
+
+        return end($installedVersions) ?: null;
     }
 
     private function getLatestVersion(): string
