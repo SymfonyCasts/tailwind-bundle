@@ -13,6 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\InputStream;
 use Symfony\Component\Process\Process;
 use Symfony\Contracts\Cache\CacheInterface;
+use Symfonycasts\TailwindBundle\Exception\InvalidArgumentException;
 
 /**
  * Manages the process of executing Tailwind on the input file.
@@ -52,7 +53,6 @@ class TailwindBuilder
         ?string $postCssConfigFile = null,
     ): Process {
         $binary = $this->createBinary();
-
         $inputPath = $this->validateInputFile($inputFile ?? $this->inputPaths[0]);
         if (!\in_array($inputPath, $this->inputPaths)) {
             throw new \InvalidArgumentException(\sprintf('The input CSS file "%s" is not one of the configured input files.', $inputPath));
@@ -70,7 +70,9 @@ class TailwindBuilder
         }
 
         $postCssConfigPath = $this->validatePostCssConfigFile($postCssConfigFile ?? $this->postCssConfigPath);
-        if ($postCssConfigPath) {
+        if ($this->isBinaryVersionEqualOrGreaterThan4($binary) && $postCssConfigPath) {
+            throw new InvalidArgumentException('Tailwind 4+ does not support a PostCSS config file.');
+        } elseif ($postCssConfigPath) {
             $arguments[] = '--postcss';
             $arguments[] = $postCssConfigPath;
         }
@@ -140,9 +142,10 @@ class TailwindBuilder
         return file_get_contents($this->getInternalOutputCssPath($inputFile));
     }
 
-    public function isBinaryVersionEqualOrGreaterThan4(): bool
+    public function isBinaryVersionEqualOrGreaterThan4(?TailwindBinary $binary = null): bool
     {
-        $binaryVersion = $this->createBinary()->getVersion();
+        $binary = $binary ?? $this->createBinary();
+        $binaryVersion = $binary->getVersion();
 
         return str_starts_with($binaryVersion, 'v')
             && version_compare(substr($binaryVersion, 1), '4') >= 0;
