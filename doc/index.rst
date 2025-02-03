@@ -4,7 +4,7 @@ Tailwind CSS for Symfony!
 .. caution::
 
     This bundle support Tailwind CSS 4.0 but PostCSS is not supported by the standalone binary.
-    Please specify a lower Tailwind binary version if you want to use PostCSS.
+    By default, the Tailwind CSS binary v3.4.17 is used and works with PostCSS.
 
 This bundle makes it easy to use `Tailwind CSS <https://tailwindcss.com/>`_ with
 Symfony's `AssetMapper Component <https://symfony.com/doc/current/frontend/asset_mapper.html>`_
@@ -250,7 +250,7 @@ Using a PostCSS config file
 .. warning::
 
     Tailwind CSS standalone binary v4.0.0 or higher doesn't support PostCSS anymore.
-    If you want to use PostCSS, please specify a previous binary version.
+    If you want to use PostCSS, let the default v3.4.17 binary version.
 
 If you want to use additional PostCSS plugins, you can specify the
 PostCSS config file to use, set ``postcss_config_file`` option or
