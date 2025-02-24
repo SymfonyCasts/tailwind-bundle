@@ -16,7 +16,8 @@
         "symfony/console": "^5.4|^6.3|^7.0",
         "symfony/http-client": "^5.4|^6.3|^7.0",
         "symfony/process": "^5.4|^6.3|^7.0",
-        "symfony/cache": "^6.3|^7.0"
+        "symfony/cache": "^6.3|^7.0",
+        "symfony/deprecation-contracts": "^2.2|^3.0"
     },
     "require-dev": {
         "symfony/filesystem": "^6.3|^7.0",

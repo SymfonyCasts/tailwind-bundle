@@ -9,11 +9,9 @@
 
 namespace Symfonycasts\TailwindBundle;
 
-use Psr\Cache\CacheItemInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Process\Process;
-use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
@@ -23,36 +21,87 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  */
 class TailwindBinary
 {
+    private const DEFAULT_VERSION = 'v3.4.17';
+
     private HttpClientInterface $httpClient;
-    private ?string $cachedVersion = null;
 
     public function __construct(
         private string $binaryDownloadDir,
         private string $cwd,
         private ?string $binaryPath,
         private ?string $binaryVersion,
-        private CacheInterface $cache,
         private ?SymfonyStyle $output = null,
         ?HttpClientInterface $httpClient = null,
     ) {
         $this->httpClient = $httpClient ?? HttpClient::create();
+
+        if (!$this->binaryVersion && !$this->binaryPath) {
+            trigger_deprecation(
+                'symfonycasts/tailwind-bundle',
+                '0.8',
+                'Not specifying a "binary" or "binary_version" is deprecated. %s is being used.',
+                self::DEFAULT_VERSION,
+            );
+
+            $this->binaryVersion = self::DEFAULT_VERSION;
+        }
+
+        if ($this->binaryVersion && $this->binaryPath) {
+            $this->binaryVersion = null;
+        }
     }
 
     public function createProcess(array $arguments = []): Process
     {
-        if (null === $this->binaryPath) {
-            $binary = $this->binaryDownloadDir.'/'.$this->getVersion().'/'.self::getBinaryName();
-            if (!is_file($binary)) {
-                $this->downloadExecutable();
-            }
-        } else {
-            $binary = $this->binaryPath;
-        }
-
-        // add $binary to the front of the $arguments array
-        array_unshift($arguments, $binary);
+        // add binary to the front of the $arguments array
+        array_unshift($arguments, $this->getBinaryPath());
 
         return new Process($arguments, $this->cwd);
+    }
+
+    public function getVersion(): string
+    {
+        if ($this->binaryVersion) {
+            return $this->binaryVersion;
+        }
+
+        $process = $this->createProcess(['--help']);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new \RuntimeException('Could not determine the tailwindcss version.');
+        }
+
+        if (!preg_match('#(v\d+\.\d+\.\d+)#', $process->getOutput(), $matches)) {
+            throw new \RuntimeException('Could not determine the tailwindcss version.');
+        }
+
+        return $this->binaryVersion = $matches[1];
+    }
+
+    public function isV4(): bool
+    {
+        return version_compare($this->getRawVersion(), '4.0.0', '>=');
+    }
+
+    public function getRawVersion(): string
+    {
+        return ltrim($this->getVersion(), 'v');
+    }
+
+    private function getBinaryPath(): string
+    {
+        if ($this->binaryPath) {
+            return $this->binaryPath;
+        }
+
+        $this->binaryPath = $this->binaryDownloadDir.'/'.$this->getVersion().'/'.self::getBinaryName();
+
+        if (!is_file($this->binaryPath)) {
+            $this->downloadExecutable();
+        }
+
+        return $this->binaryPath;
     }
 
     private function downloadExecutable(): void
@@ -91,25 +140,6 @@ class TailwindBinary
         $this->output?->writeln('');
         // make file executable
         chmod($targetPath, 0777);
-    }
-
-    private function getVersion(): string
-    {
-        return $this->cachedVersion ??= $this->binaryVersion ?? $this->getLatestVersion();
-    }
-
-    private function getLatestVersion(): string
-    {
-        return $this->cache->get('latestVersion', function (CacheItemInterface $item) {
-            $item->expiresAfter(3600);
-            try {
-                $response = $this->httpClient->request('GET', 'https://api.github.com/repos/tailwindlabs/tailwindcss/releases/latest');
-
-                return $response->toArray()['name'] ?? throw new \Exception('Cannot get the latest version name from response JSON.');
-            } catch (\Throwable $e) {
-                throw new \Exception('Cannot determine latest Tailwind CLI binary version. Please specify a version in the configuration.', previous: $e);
-            }
-        });
     }
 
     /**

@@ -1,10 +1,6 @@
 Tailwind CSS for Symfony!
 =========================
 
-.. caution::
-
-    This bundle does not yet support Tailwind CSS 4.0.
-
 This bundle makes it easy to use `Tailwind CSS <https://tailwindcss.com/>`_ with
 Symfony's `AssetMapper Component <https://symfony.com/doc/current/frontend/asset_mapper.html>`_
 (no Node.js required!).
@@ -30,6 +26,10 @@ Install the bundle & initialize your app with two commands:
 
 Done! This will create a ``tailwind.config.js`` file and make sure your
 ``assets/styles/app.css`` contains the Tailwind directives.
+
+.. note::
+
+    If using Tailwind CSS v4+, ``tailwind.config.js`` is not created or used.
 
 Usage
 -----
@@ -68,6 +68,10 @@ command with ``--poll`` option.
 .. code-block:: terminal
 
     $ php bin/console tailwind:build --watch --poll
+
+.. caution::
+
+    The ``--poll`` option is not available in Tailwind CSS v4+.
 
 Symfony CLI
 ~~~~~~~~~~~
@@ -130,6 +134,11 @@ The Tailwind binary that the bundle downloads already contains the "Official Plu
 This means you can use those simply by adding the line to the ``plugins`` key in
 ``tailwind.config.js`` - e.g. ``require('@tailwindcss/typography')``.
 
+.. note
+
+    In Tailwind CSS v4 you include plugins with the ``@plugin`` directive in your
+    input CSS file - e.g. ``@plugin "@tailwindcss/typography";``.
+
 For other plugins - like `Flowbite Datepicker <https://flowbite.com/docs/plugins/datepicker/>`_,
 you will need to follow that package's documentation to `require the package <https://flowbite.com/docs/getting-started/quickstart/#require-via-npm>`_
 with ``npm``:
@@ -178,6 +187,10 @@ It's possible to use multiple input files by providing an array:
 
 Another option is the ``config_file`` option, which defaults to ``tailwind.config.js``.
 This represents the Tailwind configuration file:
+
+.. caution::
+
+    The ``config_file`` is ignored in Tailwind CSS v4+.
 
 .. code-block:: yaml
 
@@ -231,11 +244,9 @@ To instruct the bundle to use that binary instead, set the ``binary`` option:
         binary: 'node_modules/.bin/tailwindcss'
 
 Using a Different Binary Version
-------------------------
+--------------------------------
 
-By default, the latest standalone Tailwind binary gets downloaded. However,
-if you want to use a different version, you can specify the version to use,
-set ``binary_version`` option:
+To use a different version, adjust the ``binary_version`` option:
 
 .. code-block:: yaml
 
@@ -244,7 +255,11 @@ set ``binary_version`` option:
         binary_version: 'v3.3.0'
 
 Using a PostCSS config file
-------------------------
+---------------------------
+
+.. caution::
+
+    PostCSS config is not available in Tailwind CSS v4+.
 
 If you want to use additional PostCSS plugins, you can specify the
 PostCSS config file to use, set ``postcss_config_file`` option or

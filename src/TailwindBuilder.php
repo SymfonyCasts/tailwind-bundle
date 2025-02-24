@@ -12,7 +12,6 @@ namespace Symfonycasts\TailwindBundle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\InputStream;
 use Symfony\Component\Process\Process;
-use Symfony\Contracts\Cache\CacheInterface;
 
 /**
  * Manages the process of executing Tailwind on the input file.
@@ -25,12 +24,12 @@ class TailwindBuilder
 {
     private ?SymfonyStyle $output = null;
     private readonly array $inputPaths;
+    private TailwindBinary $binary;
 
     public function __construct(
         private readonly string $projectRootDir,
         array $inputPaths,
         private readonly string $tailwindVarDir,
-        private CacheInterface $cache,
         private readonly ?string $binaryPath = null,
         private readonly ?string $binaryVersion = null,
         private readonly string $configPath = 'tailwind.config.js',
@@ -58,6 +57,10 @@ class TailwindBuilder
             throw new \InvalidArgumentException(\sprintf('The input CSS file "%s" is not one of the configured input files.', $inputPath));
         }
 
+        if ($poll && $binary->isV4()) {
+            throw new \InvalidArgumentException('The --poll option is not supported in Tailwind CSS v4.0.0 and later.');
+        }
+
         $arguments = ['-c', $this->configPath, '-i', $inputPath, '-o', $this->getInternalOutputCssPath($inputPath)];
         if ($watch) {
             $arguments[] = '--watch';
@@ -69,7 +72,13 @@ class TailwindBuilder
             $arguments[] = '--minify';
         }
 
-        $postCssConfigPath = $this->validatePostCssConfigFile($postCssConfigFile ?? $this->postCssConfigPath);
+        $postCssConfigFile ??= $this->postCssConfigPath;
+
+        if ($postCssConfigFile && $binary->isV4()) {
+            throw new \InvalidArgumentException('Custom PostCSS configuration is not supported in Tailwind CSS v4.0.0 and later.');
+        }
+
+        $postCssConfigPath = $this->validatePostCssConfigFile($postCssConfigFile);
         if ($postCssConfigPath) {
             $arguments[] = '--postcss';
             $arguments[] = $postCssConfigPath;
@@ -140,6 +149,11 @@ class TailwindBuilder
         return file_get_contents($this->getInternalOutputCssPath($inputFile));
     }
 
+    public function createBinary(): TailwindBinary
+    {
+        return $this->binary ??= new TailwindBinary($this->tailwindVarDir, $this->projectRootDir, $this->binaryPath, $this->binaryVersion, $this->output);
+    }
+
     private function validateInputFile(string $inputPath): string
     {
         if (is_file($inputPath)) {
@@ -168,10 +182,5 @@ class TailwindBuilder
         }
 
         throw new \InvalidArgumentException(\sprintf('The PostCSS config file "%s" does not exist.', $postCssConfigPath));
-    }
-
-    private function createBinary(): TailwindBinary
-    {
-        return new TailwindBinary($this->tailwindVarDir, $this->projectRootDir, $this->binaryPath, $this->binaryVersion, $this->cache, $this->output);
     }
 }
