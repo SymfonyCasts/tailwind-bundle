@@ -29,10 +29,10 @@ class TailwindExtension extends Extension implements ConfigurationInterface
 
         $container->findDefinition('tailwind.builder')
             ->replaceArgument(1, $config['input_css'])
-            ->replaceArgument(4, $config['binary'])
-            ->replaceArgument(5, $config['binary_version'])
-            ->replaceArgument(6, $config['config_file'])
-            ->replaceArgument(7, $config['postcss_config_file'])
+            ->replaceArgument(3, $config['binary'])
+            ->replaceArgument(4, $config['binary_version'])
+            ->replaceArgument(5, $config['config_file'])
+            ->replaceArgument(6, $config['postcss_config_file'])
         ;
     }
 
@@ -70,7 +70,13 @@ class TailwindExtension extends Extension implements ConfigurationInterface
                 ->end()
                 ->scalarNode('binary_version')
                     ->info('Tailwind CLI version to download - null means the latest version')
-                    ->defaultValue('v3.4.17')
+                    ->defaultNull()
+                    ->beforeNormalization()
+                        ->ifString()
+                        ->then(static function (string $version): string {
+                            return 'v'.ltrim($version, 'vV');
+                        })
+                    ->end()
                 ->end()
                 ->scalarNode('postcss_config_file')
                     ->info('Path to PostCSS config file which is passed to the Tailwind CLI')

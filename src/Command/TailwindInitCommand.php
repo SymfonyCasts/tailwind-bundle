@@ -48,6 +48,12 @@ class TailwindInitCommand extends Command
 
     private function createTailwindConfig(SymfonyStyle $io): bool
     {
+        if ($this->tailwindBuilder->createBinary()->isV4()) {
+            $io->note('Tailwind v4 detected: skipping config file creation.');
+
+            return true;
+        }
+
         $configFile = $this->tailwindBuilder->getConfigFilePath();
         if (file_exists($configFile)) {
             $io->note(\sprintf('Tailwind config file already exists in "%s"', $configFile));
@@ -94,7 +100,7 @@ class TailwindInitCommand extends Command
     {
         $inputFile = $this->tailwindBuilder->getInputCssPaths()[0];
         $contents = is_file($inputFile) ? file_get_contents($inputFile) : '';
-        if (str_contains($contents, '@tailwind base')) {
+        if (str_contains($contents, '@tailwind base') || str_contains($contents, '@import "tailwindcss"')) {
             $io->note(\sprintf('Tailwind directives already exist in "%s"', $inputFile));
 
             return;
@@ -106,6 +112,12 @@ class TailwindInitCommand extends Command
         @tailwind components;
         @tailwind utilities;
         EOF;
+
+        if ($this->tailwindBuilder->createBinary()->isV4()) {
+            $tailwindDirectives = <<<EOF
+            @import "tailwindcss";
+            EOF;
+        }
 
         file_put_contents($inputFile, $tailwindDirectives."\n\n".$contents);
     }

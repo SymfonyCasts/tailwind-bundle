@@ -12,16 +12,11 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 return static function (ContainerConfigurator $container): void {
     $container->services()
-        ->set('cache.symfonycasts.tailwind_bundle')
-            ->parent('cache.system')
-            ->tag('cache.pool')
-
         ->set('tailwind.builder', TailwindBuilder::class)
             ->args([
                 param('kernel.project_dir'),
                 abstract_arg('path to source Tailwind CSS file'),
                 param('kernel.project_dir').'/var/tailwind',
-                service('cache.symfonycasts.tailwind_bundle'),
                 abstract_arg('path to tailwind binary'),
                 abstract_arg('Tailwind binary version'),
                 abstract_arg('path to Tailwind CSS config file'),
