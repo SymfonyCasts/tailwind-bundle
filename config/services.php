@@ -6,6 +6,7 @@ use Symfonycasts\TailwindBundle\Command\TailwindBuildCommand;
 use Symfonycasts\TailwindBundle\Command\TailwindInitCommand;
 use Symfonycasts\TailwindBundle\TailwindBuilder;
 
+use Symfonycasts\TailwindBundle\TailwindVersionFinder;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\abstract_arg;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -23,6 +24,8 @@ return static function (ContainerConfigurator $container): void {
                 abstract_arg('path to PostCSS config file'),
             ])
 
+        ->set('tailwind.version_finder', TailwindVersionFinder::class)
+
         ->set('tailwind.command.build', TailwindBuildCommand::class)
             ->args([
                 service('tailwind.builder'),
@@ -31,7 +34,9 @@ return static function (ContainerConfigurator $container): void {
 
         ->set('tailwind.command.init', TailwindInitCommand::class)
             ->args([
-                service('tailwind.builder'),
+                service('tailwind.version_finder'),
+                abstract_arg('path to source Tailwind CSS file'),
+                param('kernel.project_dir'),
             ])
             ->tag('console.command')
 
