@@ -38,6 +38,7 @@ return static function (ContainerConfigurator $container): void {
         ->set('tailwind.css_asset_compiler', TailwindCssAssetCompiler::class)
             ->args([
                 service('tailwind.builder'),
+                abstract_arg('strict mode'),
             ])
             ->tag('asset_mapper.compiler', [
                 // run before core CssAssetUrlCompiler that resolves url() references

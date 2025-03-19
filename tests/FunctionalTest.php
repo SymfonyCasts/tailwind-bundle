@@ -16,32 +16,43 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class FunctionalTest extends KernelTestCase
 {
+    private const BUILT_CSS_FILE = __DIR__.'/../var/tailwind/app.built.css';
+
     protected function setUp(): void
     {
-        $fs = new Filesystem();
-        $tailwindVarDir = __DIR__.'/fixtures/var/tailwind';
-        if (is_dir($tailwindVarDir)) {
-            $fs->remove($tailwindVarDir);
-        }
-        $fs->mkdir($tailwindVarDir);
-        file_put_contents($tailwindVarDir.'/app.built.css', <<<EOF
-        body {
-            padding: 17px;
-            background-image: url('../images/penguin.png');
-        }
-        EOF
-        );
+        (new Filesystem())->remove(__DIR__.'/../var');
     }
 
-    protected function tearDown(): void
+    public function testExceptionThrownIfFileNotBuiltInNonTestEnv(): void
     {
-        if (is_file(__DIR__.'/fixtures/var/tailwind/app.built.css')) {
-            unlink(__DIR__.'/fixtures/var/tailwind/app.built.css');
-        }
+        self::bootKernel(['environment' => 'dev']);
+        $assetMapper = self::getContainer()->get('asset_mapper');
+        \assert($assetMapper instanceof AssetMapperInterface);
+
+        $this->expectException(\RuntimeException::class);
+        $assetMapper->getAsset('styles/app.css');
+    }
+
+    public function testExceptionNotThrownIfFileNotBuiltInTestEnv(): void
+    {
+        $this->expectNotToPerformAssertions();
+
+        self::bootKernel(['environment' => 'test']);
+        $assetMapper = self::getContainer()->get('asset_mapper');
+        \assert($assetMapper instanceof AssetMapperInterface);
+
+        $assetMapper->getAsset('styles/app.css');
     }
 
     public function testBuiltCSSFileIsUsed(): void
     {
+        (new Filesystem())->dumpFile(self::BUILT_CSS_FILE, <<<EOF
+        body {
+            padding: 17px;
+            background-image: url('../images/penguin.png');
+        }
+        EOF);
+
         self::bootKernel();
         $assetMapper = self::getContainer()->get('asset_mapper');
         \assert($assetMapper instanceof AssetMapperInterface);
