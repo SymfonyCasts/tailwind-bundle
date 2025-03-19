@@ -145,7 +145,7 @@ with ``npm``:
 
 .. code-block:: terminal
 
-    $ npm install flowbite
+    $ php bin/console importmap:require flowbite
 
 Then add it to ``tailwind.config.js``:
 
