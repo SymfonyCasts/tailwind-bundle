@@ -19,16 +19,21 @@ use Symfonycasts\TailwindBundle\TailwindBuilder;
  */
 class TailwindCssAssetCompiler implements AssetCompilerInterface
 {
-    public function __construct(private TailwindBuilder $tailwindBuilder)
+    public function __construct(private TailwindBuilder $tailwindBuilder, private bool $strictMode = true)
     {
     }
 
     public function supports(MappedAsset $asset): bool
     {
-        return \in_array(
-            realpath($asset->sourcePath),
-            $this->tailwindBuilder->getInputCssPaths(),
-        );
+        if (!\in_array(realpath($asset->sourcePath), $this->tailwindBuilder->getInputCssPaths())) {
+            return false;
+        }
+
+        if (!$this->strictMode && !file_exists($this->tailwindBuilder->getInternalOutputCssPath($asset->sourcePath))) {
+            return false;
+        }
+
+        return true;
     }
 
     public function compile(string $content, MappedAsset $asset, AssetMapperInterface $assetMapper): string

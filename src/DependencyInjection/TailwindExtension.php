@@ -27,6 +27,12 @@ class TailwindExtension extends Extension implements ConfigurationInterface
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
+        $strictMode = $config['strict_mode'] ?? ('test' !== $container->getParameter('kernel.environment'));
+
+        $container->findDefinition('tailwind.css_asset_compiler')
+            ->replaceArgument(1, $strictMode)
+        ;
+
         $container->findDefinition('tailwind.builder')
             ->replaceArgument(1, $config['input_css'])
             ->replaceArgument(3, $config['binary'])
@@ -80,6 +86,10 @@ class TailwindExtension extends Extension implements ConfigurationInterface
                 ->end()
                 ->scalarNode('postcss_config_file')
                     ->info('Path to PostCSS config file which is passed to the Tailwind CLI')
+                    ->defaultNull()
+                ->end()
+                ->booleanNode('strict_mode')
+                    ->info('When enabled, an exception will be thrown if there are no built assets (default: false in `test` env, true otherwise)')
                     ->defaultNull()
                 ->end()
             ->end();

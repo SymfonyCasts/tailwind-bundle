@@ -20,11 +20,6 @@ class TailwindTestKernel extends Kernel
 {
     use MicroKernelTrait;
 
-    public function __construct()
-    {
-        parent::__construct('test', true);
-    }
-
     public function registerBundles(): array
     {
         return [
@@ -54,20 +49,5 @@ class TailwindTestKernel extends Kernel
             'input_css' => [__DIR__.'/assets/styles/app.css'],
             'binary_version' => 'v3.4.17',
         ]);
-    }
-
-    public function getCacheDir(): string
-    {
-        return sys_get_temp_dir().'/cache'.spl_object_hash($this);
-    }
-
-    public function getLogDir(): string
-    {
-        return sys_get_temp_dir().'/logs'.spl_object_hash($this);
-    }
-
-    public function getProjectDir(): string
-    {
-        return __DIR__;
     }
 }
