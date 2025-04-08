@@ -95,7 +95,7 @@ class TailwindBinary
             return $this->binaryPath;
         }
 
-        $this->binaryPath = $this->binaryDownloadDir.'/'.$this->getVersion().'/'.self::getBinaryName();
+        $this->binaryPath = $this->binaryDownloadDir.'/'.$this->getVersion().'/'.self::getBinaryName($this->getRawVersion());
 
         if (!is_file($this->binaryPath)) {
             $this->downloadExecutable();
@@ -106,7 +106,8 @@ class TailwindBinary
 
     private function downloadExecutable(): void
     {
-        $url = \sprintf('https://github.com/tailwindlabs/tailwindcss/releases/download/%s/%s', $this->getVersion(), self::getBinaryName());
+        $binaryName = self::getBinaryName($this->getRawVersion());
+        $url = \sprintf('https://github.com/tailwindlabs/tailwindcss/releases/download/%s/%s', $this->getVersion(), $binaryName);
 
         $this->output?->note(\sprintf('Downloading TailwindCSS binary from %s', $url));
 
@@ -114,7 +115,7 @@ class TailwindBinary
             mkdir($this->binaryDownloadDir.'/'.$this->getVersion(), 0777, true);
         }
 
-        $targetPath = $this->binaryDownloadDir.'/'.$this->getVersion().'/'.self::getBinaryName();
+        $targetPath = $this->binaryDownloadDir.'/'.$this->getVersion().'/'.$binaryName;
         $progressBar = null;
 
         $response = $this->httpClient->request('GET', $url, [
@@ -145,47 +146,52 @@ class TailwindBinary
     /**
      * @internal
      */
-    public static function getBinaryName(): string
+    public static function getBinaryName(string $version): string
     {
         $os = strtolower(\PHP_OS);
         $machine = strtolower(php_uname('m'));
 
-        if (str_contains($os, 'darwin')) {
-            if ('arm64' === $machine) {
-                return 'tailwindcss-macos-arm64';
-            }
-            if ('x86_64' === $machine) {
-                return 'tailwindcss-macos-x64';
-            }
+        $systems = [
+            'linux'   => 'linux',
+            'windows' => 'win',
+            'darwin'  => 'macos',
+        ];
 
-            throw new \Exception(\sprintf('No matching machine found for Darwin platform (Machine: %s).', $machine));
+        $architectures = [
+            'arm64'   => 'arm64',
+            'aarch64' => 'arm64',
+            'armv7'   => 'armv7',
+            'x86_64'  => 'x64',
+            'amd64'   => 'x64',
+        ];
+
+        // Detect the current system
+        $system = null;
+        foreach ($systems as $key => $name) {
+            if (str_contains($os, $key)) {
+                $system = $name;
+                break;
+            }
         }
 
-        if (str_contains($os, 'linux')) {
-            if ('arm64' === $machine || 'aarch64' === $machine) {
-                return 'tailwindcss-linux-arm64';
-            }
-            if ('armv7' === $machine) {
-                return 'tailwindcss-linux-armv7';
-            }
-            if ('x86_64' === $machine) {
-                return 'tailwindcss-linux-x64';
-            }
+        // Detect the current architecture
+        $arch = $architectures[$machine] ?? null;
 
-            throw new \Exception(\sprintf('No matching machine found for Linux platform (Machine: %s).', $machine));
+        if(!$system || !$arch) {
+            throw new \Exception(sprintf('Unknown platform or architecture (OS: %s, Machine: %s).', $os, $machine));
         }
 
-        if (str_contains($os, 'win')) {
-            if ('arm64' === $machine) {
-                return 'tailwindcss-windows-arm64.exe';
-            }
-            if ('x86_64' === $machine || 'amd64' === $machine) {
-                return 'tailwindcss-windows-x64.exe';
-            }
+        // Detect MUSL only when version >= 4.0.0
+        if ($system === 'linux' && version_compare($version, '4.0.0', '>=')) {
+            $libs = [
+                'x64'   => 'x86_64',
+                'arm64' => 'aarch64',
+            ];
 
-            throw new \Exception(\sprintf('No matching machine found for Windows platform (Machine: %s).', $machine));
+            $isMusl = isset($libs[$arch]) && file_exists("/lib/ld-musl-{$libs[$arch]}.so.1");
+            return "tailwindcss-{$system}-{$arch}" . ($isMusl ? '-musl' : '');
         }
 
-        throw new \Exception(\sprintf('Unknown platform or architecture (OS: %s, Machine: %s).', $os, $machine));
+        return "tailwindcss-{$system}-{$arch}" . (($system === 'windows') ? '.exe' : '');
     }
 }
