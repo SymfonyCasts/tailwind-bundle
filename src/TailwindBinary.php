@@ -153,8 +153,8 @@ class TailwindBinary
 
         $systems = [
             'linux' => 'linux',
-            'windows' => 'win',
             'darwin' => 'macos',
+            'win' => 'windows',
         ];
 
         $architectures = [
