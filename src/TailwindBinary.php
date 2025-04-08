@@ -152,17 +152,17 @@ class TailwindBinary
         $machine = strtolower(php_uname('m'));
 
         $systems = [
-            'linux'   => 'linux',
+            'linux' => 'linux',
             'windows' => 'win',
-            'darwin'  => 'macos',
+            'darwin' => 'macos',
         ];
 
         $architectures = [
-            'arm64'   => 'arm64',
+            'arm64' => 'arm64',
             'aarch64' => 'arm64',
-            'armv7'   => 'armv7',
-            'x86_64'  => 'x64',
-            'amd64'   => 'x64',
+            'armv7' => 'armv7',
+            'x86_64' => 'x64',
+            'amd64' => 'x64',
         ];
 
         // Detect the current system
@@ -177,21 +177,22 @@ class TailwindBinary
         // Detect the current architecture
         $arch = $architectures[$machine] ?? null;
 
-        if(!$system || !$arch) {
-            throw new \Exception(sprintf('Unknown platform or architecture (OS: %s, Machine: %s).', $os, $machine));
+        if (!$system || !$arch) {
+            throw new \Exception(\sprintf('Unknown platform or architecture (OS: %s, Machine: %s).', $os, $machine));
         }
 
         // Detect MUSL only when version >= 4.0.0
-        if ($system === 'linux' && version_compare($version, '4.0.0', '>=')) {
+        if ('linux' === $system && version_compare($version, '4.0.0', '>=')) {
             $libs = [
-                'x64'   => 'x86_64',
+                'x64' => 'x86_64',
                 'arm64' => 'aarch64',
             ];
 
             $isMusl = isset($libs[$arch]) && file_exists("/lib/ld-musl-{$libs[$arch]}.so.1");
-            return "tailwindcss-{$system}-{$arch}" . ($isMusl ? '-musl' : '');
+
+            return "tailwindcss-{$system}-{$arch}".($isMusl ? '-musl' : '');
         }
 
-        return "tailwindcss-{$system}-{$arch}" . (($system === 'windows') ? '.exe' : '');
+        return "tailwindcss-{$system}-{$arch}".(('windows' === $system) ? '.exe' : '');
     }
 }
