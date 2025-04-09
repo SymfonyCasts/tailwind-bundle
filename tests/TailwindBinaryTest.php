@@ -33,7 +33,7 @@ class TailwindBinaryTest extends TestCase
 
         $binary = new TailwindBinary($binaryDownloadDir, __DIR__, null, 'fake-version', null, $client);
         $process = $binary->createProcess(['-i', 'fake.css']);
-        $binaryFile = $binaryDownloadDir.'/fake-version/'.TailwindBinary::getBinaryName();
+        $binaryFile = $binaryDownloadDir.'/fake-version/'.TailwindBinary::getBinaryName('4.0.0');
         $this->assertFileExists($binaryFile);
 
         $this->assertSame(
@@ -53,7 +53,7 @@ class TailwindBinaryTest extends TestCase
             $fs->remove($binaryDownloadDir);
         }
         $fs->mkdir($binaryDownloadDir);
-        $binaryFile = $binaryDownloadDir.'/'.$version.'/'.TailwindBinary::getBinaryName();
+        $binaryFile = $binaryDownloadDir.'/'.$version.'/'.TailwindBinary::getBinaryName(ltrim($version, 'v'));
 
         $binary1 = new TailwindBinary($binaryDownloadDir, __DIR__, null, $version);
 
