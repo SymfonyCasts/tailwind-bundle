@@ -61,7 +61,11 @@ class TailwindBuilder
             throw new \InvalidArgumentException('The --poll option is not supported in Tailwind CSS v4.0.0 and later.');
         }
 
-        $arguments = ['-c', $this->configPath, '-i', $inputPath, '-o', $this->getInternalOutputCssPath($inputPath)];
+        $arguments = ['-i', $inputPath, '-o', $this->getInternalOutputCssPath($inputPath)];
+
+        if (!$binary->isV4()) {
+            $arguments = ['-c', $this->configPath, ...$arguments];
+        }
         if ($watch) {
             $arguments[] = '--watch';
             if ($poll) {
