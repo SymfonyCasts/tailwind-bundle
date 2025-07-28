@@ -188,7 +188,13 @@ class TailwindBinary
                 'arm64' => 'aarch64',
             ];
 
-            $isMusl = isset($libs[$arch]) && file_exists("/lib/ld-musl-{$libs[$arch]}.so.1");
+            $isMusl = false;
+            if (is_executable('/usr/bin/ldd') || is_executable('/bin/ldd')) {
+                $ldd = shell_exec('ldd --version 2>&1');
+                if (null !== $ldd && str_contains($ldd, 'musl')) {
+                    $isMusl = true;
+                }
+            }
 
             return "tailwindcss-{$system}-{$arch}".($isMusl ? '-musl' : '');
         }
