@@ -18,7 +18,10 @@ use Symfonycasts\TailwindBundle\TailwindBinary;
 
 class TailwindBinaryTest extends TestCase
 {
-    public function testBinaryIsDownloadedAndProcessCreated()
+    /**
+     * @dataProvider platformAndVersionProvider
+     */
+    public function testBinaryIsDownloadedAndProcessCreated(string $version, string $platform, string $expectedBinaryName)
     {
         $binaryDownloadDir = __DIR__.'/fixtures/download';
         $fs = new Filesystem();
@@ -31,9 +34,9 @@ class TailwindBinaryTest extends TestCase
             new MockResponse('fake binary contents'),
         ]);
 
-        $binary = new TailwindBinary($binaryDownloadDir, __DIR__, null, 'fake-version', null, $client);
+        $binary = new TailwindBinary($binaryDownloadDir, __DIR__, null, 'fake-version', null, $client, $platform);
         $process = $binary->createProcess(['-i', 'fake.css']);
-        $binaryFile = $binaryDownloadDir.'/fake-version/'.TailwindBinary::getBinaryName('4.0.0');
+        $binaryFile = $binaryDownloadDir.'/fake-version/'.$expectedBinaryName;
         $this->assertFileExists($binaryFile);
 
         $this->assertSame(
@@ -85,5 +88,22 @@ class TailwindBinaryTest extends TestCase
             $expected,
             $process->getCommandLine()
         );
+    }
+
+    public function platformAndVersionProvider(): iterable
+    {
+        yield ['3.4.17', 'linux-arm64', 'tailwindcss-linux-arm64'];
+        yield ['3.4.17', 'linux-armv7', 'tailwindcss-linux-armv7'];
+        yield ['3.4.17', 'linux-x64', 'tailwindcss-linux-x64'];
+        yield ['3.4.17', 'macos-arm64', 'tailwindcss-macos-arm64'];
+        yield ['3.4.17', 'macos-x64', 'tailwindcss-macos-x64'];
+        yield ['3.4.17', 'windows-x64', 'tailwindcss-windows-x64.exe'];
+        yield ['4.0.0', 'linux-arm64', 'tailwindcss-linux-arm64'];
+        yield ['4.0.0', 'linux-arm64-musl', 'tailwindcss-linux-arm64-musl'];
+        yield ['4.0.0', 'linux-x64', 'tailwindcss-linux-x64'];
+        yield ['4.0.0', 'linux-x64-musl', 'tailwindcss-linux-x64-musl'];
+        yield ['4.0.0', 'macos-arm64', 'tailwindcss-macos-arm64'];
+        yield ['4.0.0', 'macos-x64', 'tailwindcss-macos-x64'];
+        yield ['4.0.0', 'windows-x64', 'tailwindcss-windows-x64.exe'];
     }
 }

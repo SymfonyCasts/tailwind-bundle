@@ -39,6 +39,7 @@ class TailwindExtension extends Extension implements ConfigurationInterface
             ->replaceArgument(4, $config['binary_version'])
             ->replaceArgument(5, $config['config_file'])
             ->replaceArgument(6, $config['postcss_config_file'])
+            ->replaceArgument(7, $config['binary_platform'])
         ;
     }
 
@@ -57,6 +58,7 @@ class TailwindExtension extends Extension implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('symfonycasts_tailwind');
         $rootNode = $treeBuilder->getRootNode();
         \assert($rootNode instanceof ArrayNodeDefinition);
+        $platforms = ['auto', 'linux-arm64', 'linux-arm64-musl', 'linux-x64', 'linux-x64-musl', 'macos-arm64', 'macos-x64', 'windows-x64'];
 
         $rootNode
             ->children()
@@ -83,6 +85,11 @@ class TailwindExtension extends Extension implements ConfigurationInterface
                             return 'v'.ltrim($version, 'vV');
                         })
                     ->end()
+                ->end()
+                ->enumNode('binary_platform')
+                    ->values($platforms)
+                    ->info('Tailwind CLI platform to download - "auto" will try to detect the platform automatically')
+                    ->defaultValue('auto')
                 ->end()
                 ->scalarNode('postcss_config_file')
                     ->info('Path to PostCSS config file which is passed to the Tailwind CLI')
