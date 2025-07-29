@@ -32,6 +32,7 @@ class TailwindBinary
         private ?string $binaryVersion,
         private ?SymfonyStyle $output = null,
         ?HttpClientInterface $httpClient = null,
+        private string $binaryPlatform = 'auto',
     ) {
         $this->httpClient = $httpClient ?? HttpClient::create();
 
@@ -95,7 +96,7 @@ class TailwindBinary
             return $this->binaryPath;
         }
 
-        $this->binaryPath = $this->binaryDownloadDir.'/'.$this->getVersion().'/'.self::getBinaryName($this->getRawVersion());
+        $this->binaryPath = $this->binaryDownloadDir.'/'.$this->getVersion().'/'.self::getBinaryName($this->getRawVersion(), $this->binaryPlatform);
 
         if (!is_file($this->binaryPath)) {
             $this->downloadExecutable();
@@ -106,7 +107,7 @@ class TailwindBinary
 
     private function downloadExecutable(): void
     {
-        $binaryName = self::getBinaryName($this->getRawVersion());
+        $binaryName = self::getBinaryName($this->getRawVersion(), $this->binaryPlatform);
         $url = \sprintf('https://github.com/tailwindlabs/tailwindcss/releases/download/%s/%s', $this->getVersion(), $binaryName);
 
         $this->output?->note(\sprintf('Downloading TailwindCSS binary from %s', $url));
@@ -146,8 +147,19 @@ class TailwindBinary
     /**
      * @internal
      */
-    public static function getBinaryName(string $version): string
+    public static function getBinaryName(string $version, string $platform = 'auto'): string
     {
+        $system = self::getBinarySystem($version, $platform);
+        $isWindows = str_contains($system, 'windows');
+
+        return "tailwindcss-{$system}".(($isWindows) ? '.exe' : '');
+    }
+
+    private static function getBinarySystem(string $version, string $platform): string
+    {
+        if ('auto' !== $platform) {
+            return $platform;
+        }
         $os = strtolower(\PHP_OS);
         $machine = strtolower(php_uname('m'));
 
@@ -183,11 +195,6 @@ class TailwindBinary
 
         // Detect MUSL only when version >= 4.0.0
         if ('linux' === $system && version_compare($version, '4.0.0', '>=')) {
-            $libs = [
-                'x64' => 'x86_64',
-                'arm64' => 'aarch64',
-            ];
-
             $isMusl = false;
             if (is_executable('/usr/bin/ldd') || is_executable('/bin/ldd')) {
                 $ldd = shell_exec('ldd --version 2>&1');
@@ -196,9 +203,9 @@ class TailwindBinary
                 }
             }
 
-            return "tailwindcss-{$system}-{$arch}".($isMusl ? '-musl' : '');
+            return "{$system}-{$arch}".($isMusl ? '-musl' : '');
         }
 
-        return "tailwindcss-{$system}-{$arch}".(('windows' === $system) ? '.exe' : '');
+        return "{$system}-{$arch}";
     }
 }

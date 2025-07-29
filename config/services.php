@@ -21,6 +21,7 @@ return static function (ContainerConfigurator $container): void {
                 abstract_arg('Tailwind binary version'),
                 abstract_arg('path to Tailwind CSS config file'),
                 abstract_arg('path to PostCSS config file'),
+                abstract_arg('Tailwind binary platform'),
             ])
 
         ->set('tailwind.command.build', TailwindBuildCommand::class)

@@ -34,6 +34,7 @@ class TailwindBuilder
         private readonly ?string $binaryVersion = null,
         private readonly string $configPath = 'tailwind.config.js',
         private readonly ?string $postCssConfigPath = null,
+        private readonly string $binaryPlatform = 'auto',
     ) {
         $paths = [];
         foreach ($inputPaths as $inputPath) {
@@ -155,7 +156,7 @@ class TailwindBuilder
 
     public function createBinary(): TailwindBinary
     {
-        return $this->binary ??= new TailwindBinary($this->tailwindVarDir, $this->projectRootDir, $this->binaryPath, $this->binaryVersion, $this->output);
+        return $this->binary ??= new TailwindBinary($this->tailwindVarDir, $this->projectRootDir, $this->binaryPath, $this->binaryVersion, $this->output, null, $this->binaryPlatform);
     }
 
     private function validateInputFile(string $inputPath): string
