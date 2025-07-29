@@ -254,6 +254,20 @@ To use a different version, adjust the ``binary_version`` option:
     symfonycasts_tailwind:
         binary_version: 'v3.3.0'
 
+Using a Different Binary Platform
+---------------------------------
+
+When downloading Tailwind, the bundle detects your platform and downloads
+the appropriate binary. This detection sometimes gets it wrong, so you can
+override it by setting the ``binary_platform`` option.
+
+.. code-block:: yaml
+
+    # config/packages/symfonycasts_tailwind.yaml
+    symfonycasts_tailwind:
+        # one of: 'linux-arm64', 'linux-arm64-musl', 'linux-x64', 'linux-x64-musl', 'macos-arm64', 'macos-x64', 'windows-x64'
+        binary_platform: 'linux-x64'
+
 Using a PostCSS config file
 ---------------------------
 
