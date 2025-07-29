@@ -195,17 +195,27 @@ class TailwindBinary
 
         // Detect MUSL only when version >= 4.0.0
         if ('linux' === $system && version_compare($version, '4.0.0', '>=')) {
-            $isMusl = false;
-            if (is_executable('/usr/bin/ldd') || is_executable('/bin/ldd')) {
-                $ldd = shell_exec('ldd --version 2>&1');
-                if (null !== $ldd && str_contains($ldd, 'musl')) {
-                    $isMusl = true;
-                }
-            }
-
-            return "{$system}-{$arch}".($isMusl ? '-musl' : '');
+            return "{$system}-{$arch}".(self::isMusl() ? '-musl' : '');
         }
 
         return "{$system}-{$arch}";
+    }
+
+    private static function isMusl(): bool
+    {
+        static $isMusl = null;
+
+        if (null !== $isMusl) {
+            return $isMusl;
+        }
+
+        if (!\function_exists('phpinfo')) {
+            return $isMusl = false;
+        }
+
+        ob_start();
+        phpinfo(\INFO_GENERAL);
+
+        return $isMusl = 1 === preg_match('/--build=.*?-linux-musl/', ob_get_clean() ?: '');
     }
 }
