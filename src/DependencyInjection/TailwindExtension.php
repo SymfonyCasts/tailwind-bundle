@@ -41,6 +41,9 @@ class TailwindExtension extends Extension implements ConfigurationInterface
             ->replaceArgument(6, $config['postcss_config_file'])
             ->replaceArgument(7, $config['binary_platform'])
         ;
+        $container->findDefinition('tailwind.command.init')
+            ->replaceArgument(1, $config['input_css'])
+        ;
     }
 
     public function getConfiguration(array $config, ContainerBuilder $container): ?ConfigurationInterface

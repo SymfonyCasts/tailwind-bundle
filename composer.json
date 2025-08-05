@@ -23,7 +23,8 @@
         "symfony/filesystem": "^6.3|^7.0",
         "symfony/framework-bundle": "^6.3|^7.0",
         "symfony/phpunit-bridge": "^6.3.9|^7.0",
-        "phpunit/phpunit": "^9.6"
+        "phpunit/phpunit": "^9.6",
+        "symfony/yaml": "^6.3|^7.0"
     },
     "minimum-stability": "dev",
     "autoload": {
