@@ -10,9 +10,12 @@
 namespace Symfonycasts\TailwindBundle;
 
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Process\Process;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfonycasts\TailwindBundle\Model\TailwindBinaries;
+use Symfonycasts\TailwindBundle\Model\TailwindBinary as TailwindBinaryAsset;
 
 /**
  * Wraps and downloads the tailwindcss binary.
@@ -96,7 +99,12 @@ class TailwindBinary
             return $this->binaryPath;
         }
 
-        $this->binaryPath = $this->binaryDownloadDir.'/'.$this->getVersion().'/'.self::getBinaryName($this->getRawVersion(), $this->binaryPlatform);
+        $this->binaryPath = Path::canonicalize(
+            $this->binaryDownloadDir.'/'.$this->getVersion().'/'.self::getBinaryName(
+                $this->getRawVersion(),
+                $this->binaryPlatform
+            )
+        );
 
         if (!is_file($this->binaryPath)) {
             $this->downloadExecutable();
@@ -105,10 +113,116 @@ class TailwindBinary
         return $this->binaryPath;
     }
 
+    private function requestBinariesByVersion(string $version): TailwindBinaries
+    {
+        $url = \sprintf('https://api.github.com/repos/tailwindlabs/tailwindcss/releases/tags/v%s', $version);
+        $assets = [];
+
+        $response = $this->httpClient->request('GET', $url);
+
+        $content = json_decode($response->getContent(), true, 512, \JSON_THROW_ON_ERROR);
+
+        $tailwindBinaries = new TailwindBinaries(
+            name: $content['name'],
+            publishedAt: $content['published_at'],
+            assets: $assets
+        );
+
+        foreach ($content['assets'] as $asset) {
+            if ('text/plain' === $asset['content_type']) {
+                continue;
+            }
+
+            if (version_compare($version, '4.1.9', '<=')) {
+                $this->output?->note('No digest available for version below 4.1.9. No file integrity check possible.');
+                $asset['digest'] = '';
+            }
+
+            $asset = new TailwindBinaryAsset(
+                name: $asset['name'],
+                contentType: $asset['content_type'],
+                fileSize: $asset['size'],
+                digest: $asset['digest'],
+                createdAt: $asset['created_at'],
+                downloadUrl: $asset['browser_download_url'],
+            );
+
+            $assets[] = $asset;
+        }
+
+        $tailwindBinaries->setAssets($assets);
+
+        return $tailwindBinaries;
+    }
+
     private function downloadExecutable(): void
     {
+        $releases = $this->requestBinariesByVersion($this->getRawVersion());
         $binaryName = self::getBinaryName($this->getRawVersion(), $this->binaryPlatform);
-        $url = \sprintf('https://github.com/tailwindlabs/tailwindcss/releases/download/%s/%s', $this->getVersion(), $binaryName);
+
+        $releaseToDownload = $releases->getAssetByBinaryName($binaryName);
+        $url = $releaseToDownload->getDownloadUrl();
+
+        $this->output?->note(\sprintf('Downloading TailwindCSS binary from %s', $url));
+
+        if (!is_dir($this->binaryDownloadDir.'/'.$this->getVersion())) {
+            mkdir($this->binaryDownloadDir.'/'.$this->getVersion(), 0777, true);
+        }
+
+        $targetPath = $this->binaryDownloadDir.'/'.$this->getVersion().'/'.$binaryName;
+        $progressBar = null;
+
+        $response = $this->httpClient->request('GET', $url, [
+            'on_progress' => function (int $dlNow, int $dlSize, array $info) use (
+                $releaseToDownload,
+                &$progressBar
+            ): void {
+                if (0 === $dlSize) {
+                    return;
+                }
+
+                if (!$progressBar) {
+                    $progressBar = $this->output?->createProgressBar($releaseToDownload->getSize());
+                }
+
+                $progressBar?->setProgress($dlNow);
+            },
+        ]);
+
+        $fileHandler = fopen($targetPath, 'w');
+        foreach ($this->httpClient->stream($response) as $chunk) {
+            fwrite($fileHandler, $chunk->getContent());
+        }
+        fclose($fileHandler);
+
+        $progressBar?->finish();
+        $this->output?->writeln('');
+        chmod($targetPath, 0777);
+
+        $downloadedFileHash = hash_file('sha256', $targetPath);
+
+        if (!$this->checkFileIntegrity($releaseToDownload->getDigest(), $downloadedFileHash)) {
+            $this->output?->error(
+                'There has been an error downloading the file. It may have become corrupted during download. See troubleshooting in documentation.'
+            );
+            $this->output?->error(\sprintf('Expected file hash %s', $releaseToDownload->getDigest()));
+            $this->output?->error(\sprintf('Expected file hash %s', $downloadedFileHash));
+        }
+    }
+
+    private function checkFileIntegrity(string $digest, string $fileHash): bool
+    {
+        return hash_equals($digest, $fileHash);
+    }
+
+    private function downloadExecutableOld(): void
+    {
+        $binaryName = self::getBinaryName($this->getRawVersion(), $this->binaryPlatform);
+        $url = \sprintf(
+            'https://github.com/tailwindlabs/tailwindcss/releases/download/%s/%s',
+            $this->getVersion(),
+            $binaryName
+        );
 
         $this->output?->note(\sprintf('Downloading TailwindCSS binary from %s', $url));
 
@@ -190,7 +304,7 @@ class TailwindBinary
         $arch = $architectures[$machine] ?? null;
 
         if (!$system || !$arch) {
-            throw new \Exception(\sprintf('Unknown platform or architecture (OS: %s, Machine: %s).', $os, $machine));
+            throw new \UnexpectedValueException(\sprintf('Unknown platform or architecture (OS: %s, Machine: %s).', $os, $machine));
         }
 
         // Detect MUSL only when version >= 4.0.0
