@@ -12,6 +12,7 @@ namespace Symfonycasts\TailwindBundle\Tests;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 use Symfonycasts\TailwindBundle\TailwindBuilder;
 
 class TailwindBuilderTest extends TestCase
@@ -19,7 +20,7 @@ class TailwindBuilderTest extends TestCase
     protected function setUp(): void
     {
         $fs = new Filesystem();
-        $fs->mkdir(__DIR__.'/fixtures/var/tailwind');
+        $fs->mkdir(Path::canonicalize(__DIR__.'/fixtures/var/tailwind'));
     }
 
     protected function tearDown(): void
@@ -30,7 +31,7 @@ class TailwindBuilderTest extends TestCase
         // so try to clean up the dir a few times
         while (true) {
             try {
-                $fs->remove(__DIR__.'/fixtures/var/tailwind');
+                $fs->remove(Path::canonicalize(__DIR__.'/fixtures/var/tailwind'));
                 break;
             } catch (IOException $e) {
                 if ($i++ > 5) {

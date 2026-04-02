@@ -11,21 +11,22 @@ namespace Symfonycasts\TailwindBundle\Model;
 
 class TailwindBinaries
 {
+    /**
+     * @param TailwindBinary[] $assets
+     */
     public function __construct(
-        private string $name,
-        private string $publishedAt,
-        private array $assets,
+        private readonly string $name,
+        private readonly string $publishedAt,
+        private readonly array $assets,
     ) {
     }
 
-    public function getAssetByBinaryName(string $assetName)
+    public function getAssetByBinaryName(string $assetName): ?TailwindBinary
     {
         foreach ($this->assets as $asset) {
-            if ($asset->getName() !== $assetName) {
-                continue;
+            if ($asset->getName() === $assetName) {
+                return $asset;
             }
-
-            return $asset;
         }
 
         return null;
@@ -36,28 +37,14 @@ class TailwindBinaries
         return $this->name;
     }
 
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
     public function getPublishedAt(): string
     {
         return $this->publishedAt;
     }
 
-    public function setPublishedAt(string $publishedAt): void
-    {
-        $this->publishedAt = $publishedAt;
-    }
-
+    /** @return TailwindBinary[] */
     public function getAssets(): array
     {
         return $this->assets;
-    }
-
-    public function setAssets(array $assets): void
-    {
-        $this->assets = $assets;
     }
 }
