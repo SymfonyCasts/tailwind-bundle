@@ -289,3 +289,24 @@ pass the ``--postcss`` option to the ``tailwind:build`` command.
 .. code-block:: terminal
 
     $ php bin/console tailwind:build --postcss='postcss.config.js'
+
+Configuring the Build Timeout
+------------------------------
+
+By default, the build process will timeout after 60 seconds. For large projects
+where the build takes longer, you can increase this limit via the ``process_timeout``
+option:
+
+.. code-block:: yaml
+
+    # config/packages/symfonycasts_tailwind.yaml
+    symfonycasts_tailwind:
+        process_timeout: 120
+
+To disable the timeout entirely, set it to ``0``:
+
+.. code-block:: yaml
+
+    # config/packages/symfonycasts_tailwind.yaml
+    symfonycasts_tailwind:
+        process_timeout: 0

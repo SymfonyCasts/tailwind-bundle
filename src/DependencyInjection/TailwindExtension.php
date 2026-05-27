@@ -40,6 +40,7 @@ class TailwindExtension extends Extension implements ConfigurationInterface
             ->replaceArgument(5, $config['config_file'])
             ->replaceArgument(6, $config['postcss_config_file'])
             ->replaceArgument(7, $config['binary_platform'])
+            ->replaceArgument(8, $config['process_timeout'])
         ;
     }
 
@@ -98,6 +99,10 @@ class TailwindExtension extends Extension implements ConfigurationInterface
                 ->booleanNode('strict_mode')
                     ->info('When enabled, an exception will be thrown if there are no built assets (default: false in `test` env, true otherwise)')
                     ->defaultNull()
+                ->end()
+                ->integerNode('process_timeout')
+                    ->info('Timeout in seconds for the Tailwind build process - use "0" to disable')
+                    ->defaultValue(60)
                 ->end()
             ->end();
 

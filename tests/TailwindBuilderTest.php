@@ -125,6 +125,42 @@ class TailwindBuilderTest extends TestCase
         $this->assertStringContainsString('body{background-color:blue}', $outputFileContents, 'The output file should contain minified CSS.');
     }
 
+    public function testCustomProcessTimeout(): void
+    {
+        $builder = new TailwindBuilder(
+            __DIR__.'/fixtures',
+            [__DIR__.'/fixtures/assets/styles/app.css'],
+            __DIR__.'/fixtures/var/tailwind',
+            null,
+            'v3.4.17',
+            __DIR__.'/fixtures/tailwind.config.js',
+            null,
+            'auto',
+            120,
+        );
+        $process = $builder->runBuild(watch: false, poll: false, minify: false);
+        $this->assertSame(120.0, $process->getTimeout());
+        $process->wait();
+    }
+
+    public function testProcessTimeoutIsDisabledWithZero(): void
+    {
+        $builder = new TailwindBuilder(
+            __DIR__.'/fixtures',
+            [__DIR__.'/fixtures/assets/styles/app.css'],
+            __DIR__.'/fixtures/var/tailwind',
+            null,
+            'v3.4.17',
+            __DIR__.'/fixtures/tailwind.config.js',
+            null,
+            'auto',
+            0,
+        );
+        $process = $builder->runBuild(watch: false, poll: false, minify: false);
+        $this->assertNull($process->getTimeout());
+        $process->wait();
+    }
+
     public function testIntegrationWithPostcss(): void
     {
         $builder = new TailwindBuilder(
