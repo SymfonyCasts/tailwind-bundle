@@ -35,6 +35,7 @@ class TailwindBuilder
         private readonly string $configPath = 'tailwind.config.js',
         private readonly ?string $postCssConfigPath = null,
         private readonly string $binaryPlatform = 'auto',
+        private readonly int $processTimeout = 60,
     ) {
         $paths = [];
         foreach ($inputPaths as $inputPath) {
@@ -94,6 +95,8 @@ class TailwindBuilder
             // setting an input stream causes the command to "wait" for the watch
             $inputStream = new InputStream();
             $process->setInput($inputStream);
+        } else {
+            $process->setTimeout($this->processTimeout ?: null);
         }
 
         $this->output?->note('Executing Tailwind (pass -v to see more details).');

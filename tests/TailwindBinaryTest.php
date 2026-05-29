@@ -21,7 +21,7 @@ class TailwindBinaryTest extends TestCase
     /**
      * @dataProvider platformAndVersionProvider
      */
-    public function testBinaryIsDownloadedAndProcessCreated(string $version, string $platform, string $expectedBinaryName)
+    public function testBinaryIsDownloadedAndProcessCreated(string $version, string $platform, string $expectedBinaryName): void
     {
         $binaryDownloadDir = __DIR__.'/fixtures/download';
         $fs = new Filesystem();
@@ -48,7 +48,7 @@ class TailwindBinaryTest extends TestCase
     /**
      * @dataProvider versionProvider
      */
-    public function testGetVersionFromBinary(string $version)
+    public function testGetVersionFromBinary(string $version): void
     {
         $binaryDownloadDir = __DIR__.'/fixtures/download';
         $fs = new Filesystem();
@@ -76,7 +76,7 @@ class TailwindBinaryTest extends TestCase
         yield ['v4.0.7'];
     }
 
-    public function testCustomBinaryUsed()
+    public function testCustomBinaryUsed(): void
     {
         $client = new MockHttpClient();
 

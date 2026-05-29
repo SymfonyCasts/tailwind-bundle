@@ -17,7 +17,7 @@ use Symfonycasts\TailwindBundle\TailwindBuilder;
 
 class TailwindCssAssetCompilerTest extends TestCase
 {
-    public function testCompile()
+    public function testCompile(): void
     {
         $builder = $this->createMock(TailwindBuilder::class);
         $builder->expects($this->any())
