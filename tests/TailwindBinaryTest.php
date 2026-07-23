@@ -24,19 +24,22 @@ class TailwindBinaryTest extends TestCase
     public function testBinaryIsDownloadedAndProcessCreated(string $version, string $platform, string $expectedBinaryName): void
     {
         $binaryDownloadDir = __DIR__.'/fixtures/download';
+
         $fs = new Filesystem();
         if (file_exists($binaryDownloadDir)) {
             $fs->remove($binaryDownloadDir);
         }
         $fs->mkdir($binaryDownloadDir);
 
+        $binaryContents = 'fake binary contents';
         $client = new MockHttpClient([
-            new MockResponse('fake binary contents'),
+            new MockResponse(\sprintf("%s  %s\n", hash('sha256', $binaryContents), $expectedBinaryName)),
+            new MockResponse($binaryContents),
         ]);
 
-        $binary = new TailwindBinary($binaryDownloadDir, __DIR__, null, 'fake-version', null, $client, $platform);
+        $binary = new TailwindBinary($binaryDownloadDir, __DIR__, null, $version, null, $client, $platform);
         $process = $binary->createProcess(['-i', 'fake.css']);
-        $binaryFile = $binaryDownloadDir.'/fake-version/'.$expectedBinaryName;
+        $binaryFile = $binaryDownloadDir.'/'.$version.'/'.$expectedBinaryName;
         $this->assertFileExists($binaryFile);
 
         $this->assertSame(
@@ -110,6 +113,122 @@ class TailwindBinaryTest extends TestCase
         $this->expectExceptionMessage('You must specify a "binary" or "binary_version"');
 
         $call($binary);
+    }
+
+    public function testZeroByteFileIsReplacedOnRedownload(): void
+    {
+        $binaryDownloadDir = __DIR__.'/fixtures/download';
+
+        $fs = new Filesystem();
+        if (file_exists($binaryDownloadDir)) {
+            $fs->remove($binaryDownloadDir);
+        }
+        $fs->mkdir($binaryDownloadDir.'/v4.1.16');
+
+        // place a 0-byte file to simulate a corrupted/interrupted download
+        $binaryName = 'tailwindcss-linux-x64';
+        $corruptFile = $binaryDownloadDir.'/v4.1.16/'.$binaryName;
+        file_put_contents($corruptFile, '');
+        $this->assertSame(0, filesize($corruptFile));
+
+        $binaryContents = 'fake binary contents';
+        $client = new MockHttpClient([
+            new MockResponse(\sprintf("%s  %s\n", hash('sha256', $binaryContents), $binaryName)),
+            new MockResponse($binaryContents),
+        ]);
+
+        $binary = new TailwindBinary($binaryDownloadDir, __DIR__, null, 'v4.1.16', null, $client, 'linux-x64');
+        $binary->createProcess(['-i', 'fake.css']);
+
+        $this->assertFileExists($corruptFile);
+        $this->assertGreaterThan(0, filesize($corruptFile));
+    }
+
+    public function testMissingChecksumsSkipsIntegrityCheck(): void
+    {
+        $binaryDownloadDir = __DIR__.'/fixtures/download';
+
+        $fs = new Filesystem();
+        if (file_exists($binaryDownloadDir)) {
+            $fs->remove($binaryDownloadDir);
+        }
+        $fs->mkdir($binaryDownloadDir);
+
+        // older releases have no "sha256sums.txt": the fetch 404s and the
+        // integrity check is skipped, so the download still succeeds
+        $client = new MockHttpClient([
+            new MockResponse('', ['http_code' => 404]),
+            new MockResponse('fake binary contents'),
+        ]);
+
+        $binary = new TailwindBinary($binaryDownloadDir, __DIR__, null, 'v3.0.0', null, $client, 'linux-x64');
+        $binary->createProcess(['-i', 'fake.css']);
+
+        $binaryFile = $binaryDownloadDir.'/v3.0.0/tailwindcss-linux-x64';
+        $this->assertFileExists($binaryFile);
+        $this->assertGreaterThan(0, filesize($binaryFile));
+    }
+
+    public function testEmptyDownloadThrowsDescriptiveException(): void
+    {
+        $binaryDownloadDir = __DIR__.'/fixtures/download';
+
+        $fs = new Filesystem();
+        if (file_exists($binaryDownloadDir)) {
+            $fs->remove($binaryDownloadDir);
+        }
+        $fs->mkdir($binaryDownloadDir);
+
+        // no checksums (404) + an empty binary body, as antivirus quarantine leaves it
+        $client = new MockHttpClient([
+            new MockResponse('', ['http_code' => 404]),
+            new MockResponse(''),
+        ]);
+
+        $binary = new TailwindBinary($binaryDownloadDir, __DIR__, null, 'v4.1.16', null, $client, 'linux-x64');
+        $binaryFile = $binaryDownloadDir.'/v4.1.16/tailwindcss-linux-x64';
+
+        try {
+            $binary->createProcess(['-i', 'fake.css']);
+            $this->fail('Expected a RuntimeException for the empty download.');
+        } catch (\RuntimeException $e) {
+            $this->assertStringContainsString('antivirus', $e->getMessage());
+        }
+
+        // the empty file must have been removed
+        $this->assertFileDoesNotExist($binaryFile);
+    }
+
+    public function testIntegrityFailureDeletesFileAndThrows(): void
+    {
+        $binaryDownloadDir = __DIR__.'/fixtures/download';
+
+        $fs = new Filesystem();
+        if (file_exists($binaryDownloadDir)) {
+            $fs->remove($binaryDownloadDir);
+        }
+        $fs->mkdir($binaryDownloadDir);
+
+        $binaryName = 'tailwindcss-linux-x64';
+
+        // advertise the hash of one payload but serve a different one so the hashes won't match
+        $client = new MockHttpClient([
+            new MockResponse(\sprintf("%s  %s\n", hash('sha256', 'the real binary'), $binaryName)),
+            new MockResponse('this content does not match the advertised hash'),
+        ]);
+
+        $binary = new TailwindBinary($binaryDownloadDir, __DIR__, null, 'v4.1.16', null, $client, 'linux-x64');
+        $binaryFile = $binaryDownloadDir.'/v4.1.16/'.$binaryName;
+
+        try {
+            $binary->createProcess(['-i', 'fake.css']);
+            $this->fail('Expected a RuntimeException for the integrity check failure.');
+        } catch (\RuntimeException $e) {
+            $this->assertStringContainsString('integrity check', $e->getMessage());
+        }
+
+        // the corrupt file must have been removed
+        $this->assertFileDoesNotExist($binaryFile);
     }
 
     public static function publicInstanceMethodProvider(): iterable
