@@ -49,18 +49,34 @@ final class TailwindBuildCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $this->tailwindBuilder->setOutput($io);
 
-        $process = $this->tailwindBuilder->runBuild(
-            watch: $input->getOption('watch'),
-            poll: $input->getOption('poll'),
-            minify: $input->getOption('minify'),
-            inputFile: $input->getArgument('input_css'),
-            postCssConfigFile: $input->getOption('postcss'),
-        );
-        $process->wait(static function ($type, $buffer) use ($io) {
-            $io->write($buffer);
-        });
+        $inputFile = $input->getArgument('input_css');
+        // Tailwind takes a single input per run, so each configured file gets its own process.
+        // They are started together, which is also what makes --watch work for all of them.
+        $inputFiles = null !== $inputFile ? [$inputFile] : $this->tailwindBuilder->getInputCssPaths();
 
-        if (!$process->isSuccessful()) {
+        $processes = [];
+
+        foreach ($inputFiles as $file) {
+            $processes[] = $this->tailwindBuilder->runBuild(
+                watch: $input->getOption('watch'),
+                poll: $input->getOption('poll'),
+                minify: $input->getOption('minify'),
+                inputFile: $file,
+                postCssConfigFile: $input->getOption('postcss'),
+            );
+        }
+
+        $failed = false;
+
+        foreach ($processes as $process) {
+            $process->wait(static function ($type, $buffer) use ($io) {
+                $io->write($buffer);
+            });
+
+            $failed = $failed || !$process->isSuccessful();
+        }
+
+        if ($failed) {
             $io->error('Tailwind CSS build failed: see output above.');
 
             return self::FAILURE;
