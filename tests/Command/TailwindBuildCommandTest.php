@@ -30,4 +30,28 @@ class TailwindBuildCommandTest extends BaseCommandTestCase
         $tester->assertCommandIsSuccessful();
         $this->assertFileExists($builtCss);
     }
+
+    public function testBuildEveryConfiguredInput(): void
+    {
+        self::bootKernel([
+            'project_dir' => $this->tempDir,
+            'tailwind_config' => [
+                'input_css' => [
+                    self::FIXTURES_DIR.'/assets/styles/v4.css',
+                    self::FIXTURES_DIR.'/assets/styles/second.css',
+                ],
+                'binary_version' => 'v4.0.7',
+            ],
+        ]);
+
+        $this->assertFileDoesNotExist($this->tempDir.'/var/tailwind/v4.built.css');
+        $this->assertFileDoesNotExist($this->tempDir.'/var/tailwind/second.built.css');
+
+        $tester = $this->commandTester('tailwind:build');
+        $tester->execute([]);
+
+        $tester->assertCommandIsSuccessful();
+        $this->assertFileExists($this->tempDir.'/var/tailwind/v4.built.css');
+        $this->assertFileExists($this->tempDir.'/var/tailwind/second.built.css');
+    }
 }
