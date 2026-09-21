@@ -59,10 +59,6 @@ final class TailwindBuilder
             throw new \InvalidArgumentException(\sprintf('The input CSS file "%s" is not one of the configured input files.', $inputPath));
         }
 
-        if ($poll && $binary->isV4()) {
-            throw new \InvalidArgumentException('The --poll option is not supported in Tailwind CSS v4.0.0 and later.');
-        }
-
         $arguments = ['-i', $inputPath, '-o', $this->getInternalOutputCssPath($inputPath)];
 
         if (!$binary->isV4()) {
