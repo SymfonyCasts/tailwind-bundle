@@ -99,7 +99,7 @@ final class TailwindBuilder
             $process->setTimeout($this->processTimeout ?: null);
         }
 
-        $this->output?->note('Executing Tailwind (pass -v to see more details).');
+        $this->output?->note(\sprintf('Executing Tailwind for "%s" (pass -v to see more details).', $this->getRelativeInputPath($inputPath)));
         if ($this->output?->isVerbose()) {
             $this->output->writeln([
                 '  Command:',
@@ -129,6 +129,13 @@ final class TailwindBuilder
     public function setOutput(SymfonyStyle $output): void
     {
         $this->output = $output;
+    }
+
+    public function getRelativeInputPath(string $inputPath): string
+    {
+        $projectRootDir = realpath($this->projectRootDir) ?: $this->projectRootDir;
+
+        return str_starts_with($inputPath, $projectRootDir.'/') ? substr($inputPath, \strlen($projectRootDir) + 1) : $inputPath;
     }
 
     public function getInternalOutputCssPath(string $inputPath): string

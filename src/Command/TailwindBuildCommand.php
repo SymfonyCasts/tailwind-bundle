@@ -66,13 +66,37 @@ final class TailwindBuildCommand extends Command
             );
         }
 
+        // Poll every process instead of waiting on each in turn: with --watch the processes
+        // never exit, and a process whose output is not read ends up blocked on a full pipe.
+        $lastWritten = null;
+        do {
+            $running = false;
+
+            foreach ($processes as $i => $process) {
+                $process->checkTimeout();
+                $running = $process->isRunning() || $running;
+                $buffer = $process->getIncrementalOutput().$process->getIncrementalErrorOutput();
+
+                if ('' === $buffer) {
+                    continue;
+                }
+
+                if (\count($processes) > 1 && $lastWritten !== $i) {
+                    $io->writeln(\sprintf('<comment>[%s]</comment>', $this->tailwindBuilder->getRelativeInputPath($inputFiles[$i])));
+                    $lastWritten = $i;
+                }
+
+                $io->write($buffer);
+            }
+
+            if ($running) {
+                usleep(100000);
+            }
+        } while ($running);
+
         $failed = false;
 
         foreach ($processes as $process) {
-            $process->wait(static function ($type, $buffer) use ($io) {
-                $io->write($buffer);
-            });
-
             $failed = $failed || !$process->isSuccessful();
         }
 
