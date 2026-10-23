@@ -10,6 +10,7 @@
 namespace Symfonycasts\TailwindBundle;
 
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\InputStream;
 use Symfony\Component\Process\Process;
 
@@ -95,7 +96,7 @@ final class TailwindBuilder
             $process->setTimeout($this->processTimeout ?: null);
         }
 
-        $this->output?->note('Executing Tailwind (pass -v to see more details).');
+        $this->output?->note(\sprintf('Executing Tailwind for "%s" (pass -v to see more details).', $this->getRelativeInputPath($inputPath)));
         if ($this->output?->isVerbose()) {
             $this->output->writeln([
                 '  Command:',
@@ -125,6 +126,13 @@ final class TailwindBuilder
     public function setOutput(SymfonyStyle $output): void
     {
         $this->output = $output;
+    }
+
+    public function getRelativeInputPath(string $inputPath): string
+    {
+        $projectRootDir = realpath($this->projectRootDir) ?: $this->projectRootDir;
+
+        return Path::isBasePath($projectRootDir, $inputPath) ? Path::makeRelative($inputPath, $projectRootDir) : $inputPath;
     }
 
     public function getInternalOutputCssPath(string $inputPath): string
