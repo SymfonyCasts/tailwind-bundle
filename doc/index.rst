@@ -126,13 +126,19 @@ Tailwind Plugins
 ----------------
 
 The Tailwind binary that the bundle downloads already contains the "Official Plugins" - e.g. `typography <https://tailwindcss.com/docs/typography-plugin>`_.
-This means you can use those simply by adding the line to the ``plugins`` key in
-``tailwind.config.js`` - e.g. ``require('@tailwindcss/typography')``.
+This means you can use those simply by adding the ``@plugin`` directive to your
+input CSS file:
 
-.. note
+.. code-block:: css
 
-    In Tailwind CSS v4 you include plugins with the ``@plugin`` directive in your
-    input CSS file - e.g. ``@plugin "@tailwindcss/typography";``.
+    /* assets/styles/app.css */
+    @import "tailwindcss";
+    @plugin "@tailwindcss/typography";
+
+.. note::
+
+    In Tailwind CSS v3, add the plugin to the ``plugins`` key in ``tailwind.config.js``
+    instead - e.g. ``require('@tailwindcss/typography')``.
 
 For other plugins - like `Flowbite Datepicker <https://flowbite.com/docs/plugins/datepicker/>`_,
 you will need to follow that package's documentation to `require the package <https://flowbite.com/docs/getting-started/quickstart/#require-via-npm>`_
@@ -142,7 +148,17 @@ with ``npm``:
 
     $ npm install flowbite
 
-Then add it to ``tailwind.config.js``:
+Then load the plugin in your input CSS file and tell Tailwind to scan the package's
+files for classes (paths are relative to the CSS file):
+
+.. code-block:: css
+
+    /* assets/styles/app.css */
+    @import "tailwindcss";
+    @plugin "flowbite/plugin";
+    @source "../../node_modules/flowbite";
+
+In Tailwind CSS v3, add it to ``tailwind.config.js`` instead:
 
 .. code-block:: javascript
 
@@ -162,8 +178,8 @@ To see the full config from this bundle, run:
     $ php bin/console config:dump symfonycasts_tailwind
 
 The main option is ``input_css`` option, which defaults to ``assets/styles/app.css``.
-This represents the "source" Tailwind files (the one that contains the ``@tailwind``
-directives):
+This represents the "source" Tailwind files (the one that contains the
+``@import "tailwindcss";`` line, or the ``@tailwind`` directives in Tailwind CSS v3):
 
 .. code-block:: yaml
 
@@ -191,20 +207,22 @@ all of them). To build only one of them, pass its path as an argument:
 Another option is the ``config_file`` option, which defaults to ``tailwind.config.js``.
 This represents the Tailwind configuration file:
 
-.. caution::
-
-    The ``config_file`` is ignored in Tailwind CSS v4+.
-
 .. code-block:: yaml
 
     # config/packages/symfonycasts_tailwind.yaml
     symfonycasts_tailwind:
         config_file: 'tailwind.config.js'
 
-If you include any other files containing CSS classes that are located outside of
-the default directories, for example, in the ``vendor/`` directory like the
+.. caution::
+
+    The ``config_file`` is ignored in Tailwind CSS v4+: the configuration lives
+    in your input CSS file instead (see `Customizing your theme <https://tailwindcss.com/docs/theme>`_).
+
+Tailwind CSS v4 automatically scans your project for files containing CSS classes,
+but it skips anything ignored by ``.gitignore`` - like the ``vendor/`` directory.
+If you use classes from files there, for example the
 `Tailwind CSS form theme <https://symfony.com/doc/current/form/tailwindcss.html>`_
- from the ``symfony/twig-bridge`` package, then after changing your Twig configuration:
+from the ``symfony/twig-bridge`` package, then after changing your Twig configuration:
 
 .. code-block:: yaml
 
@@ -213,7 +231,17 @@ the default directories, for example, in the ``vendor/`` directory like the
         form_themes:
             - 'tailwind_2_layout.html.twig'
 
-You will have to add them to your ``tailwind.config.js`` file:
+You will have to register them with the ``@source`` directive in your input CSS
+file (the path is relative to the CSS file):
+
+.. code-block:: diff
+
+      /* assets/styles/app.css */
+      @import "tailwindcss";
+    + @source "../../vendor/symfony/twig-bridge/Resources/views/Form/*.html.twig";
+
+In Tailwind CSS v3, add them to the ``content`` key of your ``tailwind.config.js``
+file instead:
 
 .. code-block:: diff
 
@@ -236,7 +264,12 @@ npm instead:
 
 .. code-block:: terminal
 
-    $ npm add tailwindcss
+    $ npm add tailwindcss @tailwindcss/cli
+
+.. note::
+
+    In Tailwind CSS v3, the CLI is part of the ``tailwindcss`` package itself,
+    so ``npm add tailwindcss@3`` is enough.
 
 To instruct the bundle to use that binary instead, set the ``binary`` option:
 
@@ -249,13 +282,21 @@ To instruct the bundle to use that binary instead, set the ``binary`` option:
 Using a Different Binary Version
 --------------------------------
 
-To use a different version, adjust the ``binary_version`` option:
+To use a different version, adjust the ``binary_version`` option. It must be an
+*exact* version - e.g. ``v4.1.11``, not just ``v4``:
 
 .. code-block:: yaml
 
     # config/packages/symfonycasts_tailwind.yaml
     symfonycasts_tailwind:
-        binary_version: 'v3.3.0'
+        binary_version: 'v4.1.11'
+
+Then clear the cache so the new version is picked up, and restart ``tailwind:build``.
+The new binary is downloaded automatically the next time it runs:
+
+.. code-block:: terminal
+
+    $ php bin/console cache:clear
 
 Updating Tailwind
 -----------------
@@ -270,7 +311,8 @@ run the ``tailwind:update`` command:
 This finds the latest release matching your current major version (e.g. if you're
 on ``v3.3.0`` it will look for the latest ``3.x`` release) and updates the
 ``binary_version`` option in ``config/packages/symfonycasts_tailwind.yaml`` for you.
-The next time you run ``tailwind:build``, the new binary is downloaded automatically.
+Clear the cache afterwards (``php bin/console cache:clear``) - the next time you run
+``tailwind:build``, the new binary is downloaded automatically.
 
 .. note::
 
@@ -280,12 +322,55 @@ The next time you run ``tailwind:build``, the new binary is downloaded automatic
 .. note::
 
     To move to a *new* major version (e.g. from ``3.x`` to ``4.x``), set the
-    ``binary_version`` option manually - see `Using a Different Binary Version`_.
+    ``binary_version`` option manually - see `Upgrading from Tailwind CSS v3 to v4`_.
 
 .. note::
 
     If you're managing your own binary (the ``binary`` option is set), this
     command can't update it for you - update it manually instead.
+
+Upgrading from Tailwind CSS v3 to v4
+------------------------------------
+
+Tailwind CSS v4 moved its configuration from ``tailwind.config.js`` into your
+CSS file. To upgrade an existing v3 setup:
+
+1. Set the ``binary_version`` option to a v4 release:
+
+   .. code-block:: yaml
+
+       # config/packages/symfonycasts_tailwind.yaml
+       symfonycasts_tailwind:
+           binary_version: 'v4.1.11'
+
+2. Replace the ``@tailwind`` directives in your input CSS file with a single import:
+
+   .. code-block:: diff
+
+         /* assets/styles/app.css */
+       - @tailwind base;
+       - @tailwind components;
+       - @tailwind utilities;
+       + @import "tailwindcss";
+
+3. Move any customizations from ``tailwind.config.js`` into your input CSS file
+   (``theme.extend`` becomes ``@theme``, ``plugins`` become ``@plugin``, extra
+   ``content`` paths become ``@source`` - see `Configuration`_), then delete
+   ``tailwind.config.js``. The ``content`` paths for ``assets/`` and ``templates/``
+   aren't needed anymore: Tailwind CSS v4 finds them automatically. See the
+   `Tailwind CSS upgrade guide <https://tailwindcss.com/docs/upgrade-guide>`_ for
+   all the details.
+
+4. Remove the ``config_file`` and ``postcss_config_file`` options from your bundle
+   configuration if you set them - they aren't supported in Tailwind CSS v4.
+
+5. Clear the cache so the new version is picked up, then restart ``tailwind:build``
+   (the v4 binary is downloaded automatically):
+
+   .. code-block:: terminal
+
+       $ php bin/console cache:clear
+       $ php bin/console tailwind:build --watch
 
 Using a Different Binary Platform
 ---------------------------------
