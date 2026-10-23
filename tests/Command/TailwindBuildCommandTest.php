@@ -10,6 +10,7 @@
 namespace Symfonycasts\TailwindBundle\Tests\Command;
 
 use Symfony\Component\Console\Command\Command;
+use Symfonycasts\TailwindBundle\TailwindBinary;
 use Symfonycasts\TailwindBundle\Tests\SharedTailwindBinary;
 
 class TailwindBuildCommandTest extends BaseCommandTestCase
@@ -32,6 +33,29 @@ class TailwindBuildCommandTest extends BaseCommandTestCase
 
         $tester->assertCommandIsSuccessful();
         $this->assertFileExists($builtCss);
+    }
+
+    public function testBuildDownloadsTheConfiguredBinaryVersion(): void
+    {
+        // the other tests share an already downloaded binary, this one goes
+        // through the download into the project, like "tailwind:init" sets it up
+        self::bootKernel([
+            'project_dir' => $this->tempDir,
+            'tailwind_config' => [
+                'input_css' => [self::FIXTURES_DIR.'/assets/styles/v4.css'],
+                'binary_version' => 'v4.0.7',
+            ],
+        ]);
+
+        $binaryFile = $this->tempDir.'/var/tailwind/v4.0.7/'.TailwindBinary::getBinaryName('4.0.7');
+        $this->assertFileDoesNotExist($binaryFile);
+
+        $tester = $this->commandTester('tailwind:build');
+        $tester->execute([]);
+
+        $tester->assertCommandIsSuccessful();
+        $this->assertFileExists($binaryFile);
+        $this->assertFileExists($this->tempDir.'/var/tailwind/v4.built.css');
     }
 
     public function testBuildEveryConfiguredInput(): void
