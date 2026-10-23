@@ -53,24 +53,13 @@ class TailwindBinaryTest extends TestCase
      */
     public function testGetVersionFromBinary(string $version): void
     {
-        $binaryDownloadDir = __DIR__.'/fixtures/download';
-        $fs = new Filesystem();
-        if (file_exists($binaryDownloadDir)) {
-            $fs->remove($binaryDownloadDir);
-        }
-        $fs->mkdir($binaryDownloadDir);
-        $binaryFile = $binaryDownloadDir.'/'.$version.'/'.TailwindBinary::getBinaryName(ltrim($version, 'v'));
-
-        $binary1 = new TailwindBinary($binaryDownloadDir, __DIR__, null, $version);
-
-        $binary1->createProcess();
+        $binaryFile = SharedTailwindBinary::path($version);
         $this->assertFileExists($binaryFile);
-        $this->assertSame($version, $binary1->getVersion());
 
         // add both the binary path and invalid version to ensure version isn't used
-        $binary2 = new TailwindBinary($binaryDownloadDir, __DIR__, $binaryFile, 'v2.2.2');
+        $binary = new TailwindBinary(__DIR__.'/fixtures/download', __DIR__, $binaryFile, 'v2.2.2');
 
-        $this->assertSame($version, $binary2->getVersion());
+        $this->assertSame($version, $binary->getVersion());
     }
 
     public static function versionProvider(): iterable

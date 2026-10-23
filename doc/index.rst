@@ -172,13 +172,21 @@ directives):
         input_css: 'assets/styles/other.css'
 
 It's possible to use multiple input files by providing an array:
+
 .. code-block:: yaml
 
-        # config/packages/symfonycasts_tailwind.yaml
-        symfonycasts_tailwind:
-            input_css:
-                - 'assets/styles/other.css'
-                - 'assets/styles/another.css'
+    # config/packages/symfonycasts_tailwind.yaml
+    symfonycasts_tailwind:
+        input_css:
+            - 'assets/styles/other.css'
+            - 'assets/styles/another.css'
+
+The ``tailwind:build`` command builds all of them (and with ``--watch``, watches
+all of them). To build only one of them, pass its path as an argument:
+
+.. code-block:: terminal
+
+    $ php bin/console tailwind:build assets/styles/other.css
 
 Another option is the ``config_file`` option, which defaults to ``tailwind.config.js``.
 This represents the Tailwind configuration file:
