@@ -10,6 +10,7 @@
 namespace Symfonycasts\TailwindBundle\Tests\Command;
 
 use Symfony\Component\Console\Command\Command;
+use Symfonycasts\TailwindBundle\Tests\SharedTailwindBinary;
 
 class TailwindBuildCommandTest extends BaseCommandTestCase
 {
@@ -19,7 +20,7 @@ class TailwindBuildCommandTest extends BaseCommandTestCase
             'project_dir' => $this->tempDir,
             'tailwind_config' => [
                 'input_css' => [self::FIXTURES_DIR.'/assets/styles/v4.css'],
-                'binary_version' => 'v4.0.7',
+                'binary' => SharedTailwindBinary::path('v4.0.7'),
             ],
         ]);
 
@@ -42,7 +43,7 @@ class TailwindBuildCommandTest extends BaseCommandTestCase
                     self::FIXTURES_DIR.'/assets/styles/v4.css',
                     self::FIXTURES_DIR.'/assets/styles/v4-second.css',
                 ],
-                'binary_version' => 'v4.0.7',
+                'binary' => SharedTailwindBinary::path('v4.0.7'),
             ],
         ]);
 
@@ -66,7 +67,7 @@ class TailwindBuildCommandTest extends BaseCommandTestCase
             'project_dir' => $this->tempDir,
             'tailwind_config' => [
                 'input_css' => $inputs,
-                'binary_version' => 'v4.0.7',
+                'binary' => SharedTailwindBinary::path('v4.0.7'),
             ],
         ]);
 

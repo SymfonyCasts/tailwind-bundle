@@ -49,8 +49,8 @@ class TailwindBuilderTest extends TestCase
             __DIR__.'/fixtures',
             [__DIR__.'/fixtures/assets/styles/v4.css'],
             __DIR__.'/fixtures/var/tailwind',
+            SharedTailwindBinary::path('v4.0.7'),
             null,
-            'v4.0.7',
         );
         $process = $builder->runBuild(watch: false, poll: false, minify: false);
         $process->wait();
@@ -68,8 +68,8 @@ class TailwindBuilderTest extends TestCase
             __DIR__.'/fixtures',
             [__DIR__.'/fixtures/assets/styles/app.css'],
             __DIR__.'/fixtures/var/tailwind',
+            SharedTailwindBinary::path('v3.4.17'),
             null,
-            'v3.4.17',
             __DIR__.'/fixtures/tailwind.config.js'
         );
         $process = $builder->runBuild(watch: false, poll: false, minify: true);
@@ -88,8 +88,8 @@ class TailwindBuilderTest extends TestCase
             __DIR__.'/fixtures',
             [__DIR__.'/fixtures/assets/styles/app.css', __DIR__.'/fixtures/assets/styles/second.css'],
             __DIR__.'/fixtures/var/tailwind',
+            SharedTailwindBinary::path('v3.4.17'),
             null,
-            'v3.4.17',
             __DIR__.'/fixtures/tailwind.config.js'
         );
         $process = $builder->runBuild(watch: false, poll: false, minify: true, inputFile: 'assets/styles/second.css');
@@ -108,8 +108,8 @@ class TailwindBuilderTest extends TestCase
             __DIR__.'/fixtures',
             [__DIR__.'/fixtures/assets/styles/app.css'],
             __DIR__.'/fixtures/var/tailwind',
+            SharedTailwindBinary::path('v3.4.17'),
             null,
-            'v3.4.17',
             __DIR__.'/fixtures/tailwind.config.js',
             null,
             'auto',
@@ -126,8 +126,8 @@ class TailwindBuilderTest extends TestCase
             __DIR__.'/fixtures',
             [__DIR__.'/fixtures/assets/styles/app.css'],
             __DIR__.'/fixtures/var/tailwind',
+            SharedTailwindBinary::path('v3.4.17'),
             null,
-            'v3.4.17',
             __DIR__.'/fixtures/tailwind.config.js',
             null,
             'auto',
@@ -144,8 +144,8 @@ class TailwindBuilderTest extends TestCase
             __DIR__.'/fixtures',
             [__DIR__.'/fixtures/assets/styles/app.css'],
             __DIR__.'/fixtures/var/tailwind',
+            SharedTailwindBinary::path('v3.4.17'),
             null,
-            'v3.4.17',
             __DIR__.'/fixtures/tailwind.config.js',
             __DIR__.'/fixtures/postcss.config.js',
         );

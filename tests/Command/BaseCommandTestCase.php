@@ -12,6 +12,7 @@ namespace Symfonycasts\TailwindBundle\Tests\Command;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfonycasts\TailwindBundle\Tests\fixtures\TailwindTestKernel;
@@ -32,7 +33,22 @@ abstract class BaseCommandTestCase extends KernelTestCase
 
     protected function tearDown(): void
     {
-        $this->filesystem->remove($this->tempDir);
+        $i = 0;
+        // Sometimes a file is still locked on Windows right after a process used it,
+        // so try to clean up the dir a few times
+        while (true) {
+            try {
+                $this->filesystem->remove($this->tempDir);
+                break;
+            } catch (IOException $e) {
+                if ($i++ > 5) {
+                    // Every test has its own temp dir, so a leftover doesn't affect the other tests
+                    break;
+                }
+                // Try again in a second
+                sleep(1);
+            }
+        }
     }
 
     protected static function createKernel(array $options = []): KernelInterface
