@@ -158,4 +158,26 @@ class TailwindBuilderTest extends TestCase
         $outputFileContents = file_get_contents(__DIR__.'/fixtures/var/tailwind/app.built.css');
         $this->assertStringContainsString('.dummy {}', $outputFileContents, 'The output file should contain the dummy CSS added by the dummy plugin.');
     }
+
+    /**
+     * @dataProvider provideInputPaths
+     */
+    public function testGetRelativeInputPath(string $projectRootDir, string $inputPath, string $expected): void
+    {
+        $builder = new TailwindBuilder(
+            $projectRootDir,
+            [__DIR__.'/fixtures/assets/styles/v4.css'],
+            __DIR__.'/fixtures/var/tailwind',
+        );
+
+        $this->assertSame($expected, $builder->getRelativeInputPath($inputPath));
+    }
+
+    public static function provideInputPaths(): iterable
+    {
+        yield 'inside the project' => ['/app', '/app/assets/styles/admin.css', 'assets/styles/admin.css'];
+        // realpath() returns backslashes on Windows
+        yield 'real path inside the project' => [__DIR__.'/fixtures', realpath(__DIR__.'/fixtures/assets/styles/v4.css'), 'assets/styles/v4.css'];
+        yield 'outside the project' => ['/app', '/other/admin.css', '/other/admin.css'];
+    }
 }

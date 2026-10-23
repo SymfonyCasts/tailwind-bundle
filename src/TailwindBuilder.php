@@ -10,6 +10,7 @@
 namespace Symfonycasts\TailwindBundle;
 
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\InputStream;
 use Symfony\Component\Process\Process;
 
@@ -135,7 +136,7 @@ final class TailwindBuilder
     {
         $projectRootDir = realpath($this->projectRootDir) ?: $this->projectRootDir;
 
-        return str_starts_with($inputPath, $projectRootDir.'/') ? substr($inputPath, \strlen($projectRootDir) + 1) : $inputPath;
+        return Path::isBasePath($projectRootDir, $inputPath) ? Path::makeRelative($inputPath, $projectRootDir) : $inputPath;
     }
 
     public function getInternalOutputCssPath(string $inputPath): string

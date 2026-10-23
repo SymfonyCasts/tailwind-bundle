@@ -9,6 +9,8 @@
 
 namespace Symfonycasts\TailwindBundle\Tests\Command;
 
+use Symfony\Component\Console\Command\Command;
+
 class TailwindBuildCommandTest extends BaseCommandTestCase
 {
     public function testBuild(): void
@@ -71,10 +73,10 @@ class TailwindBuildCommandTest extends BaseCommandTestCase
         $tester = $this->commandTester('tailwind:build');
         $tester->execute([]);
 
-        $this->assertSame(1, $tester->getStatusCode());
+        $this->assertSame(Command::FAILURE, $tester->getStatusCode());
         $this->assertStringContainsString('Cannot apply unknown utility class', $tester->getDisplay());
         // the valid input is still built
-        $this->assertFileExists($this->tempDir.'/var/tailwind/v4.built.css');
+        $this->assertFileExists($this->tempDir.'/var/tailwind/v4.built.css', $tester->getDisplay());
     }
 
     public static function provideInputsWithAnInvalidOne(): iterable
